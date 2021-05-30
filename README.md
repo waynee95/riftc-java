@@ -13,8 +13,23 @@
 
 ## Build
 
-TODO
+```bash
+$ java -version
+$ make
+$ ./riftc --help
+```
 
 ## Usage
 
-TODO
+```bash
+$ ./riftc [options] FILE
+```
+
+### Options
+
+|     Option      |            Description            |
+| :-------------: | :-------------------------------: |
+|    `--help`     |         Print this text.          |
+|  `--lex-trace`  |  Trace the result of the lexer.   |
+| `--parse-trace` |  Trace the result of the parser.  |
+|    `--parse`    | Run the parser on the input file. |
