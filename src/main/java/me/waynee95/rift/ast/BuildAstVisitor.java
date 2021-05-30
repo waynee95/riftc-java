@@ -37,12 +37,6 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     }
 
     @Override
-    public Node visitNilLit(RiftParser.NilLitContext ctx) {
-        Position pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.NilLit(pos);
-    }
-
-    @Override
     public Node visitUnary(RiftParser.UnaryContext ctx) {
         Tree.Expr operand = (Tree.Expr) visit(ctx.expr());
         Position pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());

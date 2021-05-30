@@ -44,7 +44,6 @@ literal
    : INT_LIT #IntLit
    | STRING_LIT #StringLit
    | BOOL_LIT #BoolLit
-   | NIL_LIT #NilLit
    ;
 
 pattern

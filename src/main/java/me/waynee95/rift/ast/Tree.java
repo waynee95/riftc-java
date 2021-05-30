@@ -97,22 +97,6 @@ public abstract class Tree {
         }
     }
 
-    public static class NilLit extends Expr {
-        public NilLit(Position pos) {
-            super("nil_lit", pos);
-        }
-
-        @Override
-        public Object getChild(int index) {
-            return new IndexOutOfBoundsException();
-        }
-
-        @Override
-        public int childCount() {
-            return 0;
-        }
-    }
-
     public static class Binary extends Expr {
         public final String op;
         public final Expr left;

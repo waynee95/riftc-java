@@ -26,7 +26,6 @@ EXTERN:         'extern';
 INT_LIT:        ( '0' | [1-9] ) [0-9]*;
 STRING_LIT:     '"' (~["\\\r\n] | EscapeSequence)* '"';
 BOOL_LIT:       'true' | 'false';
-NIL_LIT:        'nil';
 
 // Separators
 LPAREN:         '(';
