@@ -1,0 +1,3 @@
+while i < xs.length do
+  if xs[i] % 2 == 0 then break;
+  c = c + 1
