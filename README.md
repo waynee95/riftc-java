@@ -33,3 +33,4 @@ $ ./riftc [options] FILE
 |  `--lex-trace`  |  Trace the result of the lexer.   |
 | `--parse-trace` |  Trace the result of the parser.  |
 |    `--parse`    | Run the parser on the input file. |
+|  `--print-ast`  |       Print resulting AST.        |
