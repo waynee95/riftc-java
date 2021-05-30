@@ -1,0 +1,5 @@
+let
+  extern one(): i64
+in
+  print_int(one())
+end

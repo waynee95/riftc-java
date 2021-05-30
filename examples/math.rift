@@ -1,0 +1,6 @@
+let
+  var x = 50
+  var y = 23
+in
+  (100 / x) + (y % 2)
+end

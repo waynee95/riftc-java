@@ -1,0 +1,7 @@
+let
+  type Person = { name: string, age: i64 }
+
+  val bob = Person { "Bob", 42 }
+in
+  print(bob.name)
+end

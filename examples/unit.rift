@@ -1,0 +1,5 @@
+let
+  fn helloWorld() = print("Hello World")
+in
+  helloWorld()
+end

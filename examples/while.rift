@@ -1,0 +1,7 @@
+let
+  var x = 10
+in
+  while x > 0 do
+    print_int(x);
+    x = x - 1
+end

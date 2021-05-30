@@ -1,0 +1,69 @@
+lexer grammar RiftLexer;
+
+@header {
+package me.waynee95.rift.parse;
+}
+
+// Keywords
+
+IF:             'if';
+THEN:           'then';
+ELSE:           'else';
+WHILE:          'while';
+DO:             'do';
+BREAK:          'break';
+LET:            'let';
+IN:             'in';
+END:            'end';
+FN:             'fn';
+VAR:            'var';
+VAL:            'val';
+TYPE:           'type';
+EXTERN:         'extern';
+
+// Literals
+
+INT_LIT:        ( '0' | [1-9] ) [0-9]*;
+STRING_LIT:     '"' (~["\\\r\n] | EscapeSequence)* '"';
+BOOL_LIT:       'true' | 'false';
+NULL_LIT:       'nil';
+
+// Separators
+
+LPAREN:         '(';
+RPAREN:         ')';
+LBRACE:         '[';
+RBRACE:         ']';
+LCURLY:         '{';
+RCURLY:         '}';
+SEMI_COLON:     ';';
+COLON:          ':';
+COMMA:          ',';
+DOT:            '.';
+
+// Operators
+ADD:            '+';
+SUB:            '-';
+MULT:           '*';
+DIV:            '/';
+REM:            '%';
+AND:            '&&';
+OR:             '||';
+ASSIGN:         '=';
+LT:             '<';
+LE:             '<=';
+GT:             '>';
+GE:             '>=';
+EQ:             '==';
+NOT_EQ:         '!=';
+
+// Whitespace and Comments
+COMMENT:        '#' ~[\r\n]         -> skip;
+WS:             [ \t\u000C\r\n]+    -> skip;
+
+// Identifiers
+ID:             [A-Za-z_] [A-Za-z0-9_]*;
+
+fragment EscapeSequence
+    : '\\' ["\tn\\]
+    ;
