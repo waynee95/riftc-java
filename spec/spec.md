@@ -24,7 +24,7 @@ Additional keywords: `class`, `extends`, `new`.
 
 The following keywords cannot be used as identifiers:
 
-`if`, `then`, `else`, `while`, `do`, `break`, `let`, `in`, `end`, `nil`, `fn`, `var`, `val`, `type`, `match`, `extern`, `true`, `false`
+`if`, `then`, `else`, `while`, `do`, `break`, `let`, `in`, `end`, `nil`, `fn`, `var`, `val`, `type`, `match`, `with`, `extern`, `true`, `false`
 
 ### Identifiers
 
