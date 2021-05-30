@@ -1,5 +1,6 @@
 bin
 build
+gen
 .gradle
 .project
 .classpath
