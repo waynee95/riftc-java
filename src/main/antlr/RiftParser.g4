@@ -25,9 +25,6 @@ expr
     // Function call
     | ID '(' (expr (',' expr)*)? ')'
 
-    // Method call
-    | lvalue '.' ID '(' (expr (',' expr)*)? ')'
-
     // Operations
     | '-' expr
     | expr op expr
@@ -38,9 +35,9 @@ expr
 
     // Control structures
     | 'if' expr 'then' expr ('else' expr)?
-    | 'while' expr 'do' expr
+    | 'while' expr 'do' exprs
     | 'break'
-    | 'let' decls 'in' expr 'end'
+    | 'let' decls 'in' exprs 'end'
     | 'match' expr 'with' '|' pattern '=>' expr (',' pattern '=>' expr)* ('else' '=>' expr)?
     ;
 
