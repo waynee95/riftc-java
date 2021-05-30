@@ -1,0 +1,7 @@
+let
+  type OptionalString = Some(string) | None
+
+  val a: OptionalString = Some("Hello, World!")
+  val b: OptionalString = None
+in
+end
