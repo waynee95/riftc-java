@@ -19,6 +19,8 @@ FN:             'fn';
 VAR:            'var';
 VAL:            'val';
 TYPE:           'type';
+MATCH:          'match';
+WITH:           'with';
 EXTERN:         'extern';
 
 // Literals
@@ -40,6 +42,8 @@ SEMI_COLON:     ';';
 COLON:          ':';
 COMMA:          ',';
 DOT:            '.';
+BAR:            '|';
+FAT_ARROW:      '=>';
 
 // Operators
 ADD:            '+';

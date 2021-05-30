@@ -13,10 +13,7 @@ program
 
 expr
     // Literals
-    : INT_LIT
-    | STRING_LIT
-    | BOOL_LIT
-    | NULL_LIT
+    : literal
 
     // Array and Record creation
     | '[' exprs ']'
@@ -44,6 +41,20 @@ expr
     | 'while' expr 'do' expr
     | 'break'
     | 'let' decls 'in' expr 'end'
+    | 'match' expr 'with' '|' pattern '=>' expr (',' pattern '=>' expr)* ('else' '=>' expr)?
+    ;
+
+literal
+    : INT_LIT
+    | STRING_LIT
+    | BOOL_LIT
+    | NULL_LIT
+    ;
+
+pattern
+    : literal
+    | typeId
+    | typeId ('(' pattern ')')?
     ;
 
 lvalue
