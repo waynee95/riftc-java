@@ -54,4 +54,5 @@ gitHooks {
 
 generateGrammarSource {
     outputDirectory = file("build/generated-src/antlr/main/me/waynee95/rift/parse")
+    arguments += ["-visitor"]
 }
