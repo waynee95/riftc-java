@@ -2,6 +2,7 @@ package me.waynee95.rift;
 
 import me.waynee95.rift.ast.BuildAstVisitor;
 import me.waynee95.rift.ast.Node;
+import me.waynee95.rift.error.ParseExceptionListener;
 import me.waynee95.rift.parse.RiftLexer;
 import me.waynee95.rift.parse.RiftParser;
 import org.antlr.v4.runtime.CharStream;
@@ -63,17 +64,27 @@ class Main implements Runnable {
             }
 
             RiftParser parser = new RiftParser(new CommonTokenStream(new RiftLexer(input)));
-            RiftParser.ProgramContext prog = parser.program();
+            parser.removeErrorListeners();
+            parser.addErrorListener(new ParseExceptionListener());
 
-            Node root = new BuildAstVisitor().visitProgram(prog);
+            try {
+                RiftParser.ProgramContext prog = parser.program();
+                Node ast = new BuildAstVisitor().visitProgram(prog);
 
-            if (printAst) {
-                System.out.println(root);
+                if (printAst) {
+                    System.out.println(ast);
+                }
+            } catch (Exception e) {
+                System.err.println("error: " + e.getMessage());
+                System.err.println("\nRejected.");
+                System.exit(-1);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("\nAccepted.");
+        System.exit(0);
     }
 
     private static void printToken(Token token) {
