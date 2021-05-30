@@ -1,109 +1,127 @@
 parser grammar RiftParser;
 
-@header {
+@header
+{
 package me.waynee95.rift.parse;
 }
 
-options { tokenVocab=RiftLexer; }
-
+options { tokenVocab = RiftLexer; }
 program
-    : expr
-    | decls
-    ;
+   : expr
+   ;
 
 expr
-    // Literals
-    : literal
+   // Literals
+   : literal #Lit
 
-    // Array and Record creation
-    | '[' exprs ']'
-    | ID '{' (ID '=' expr (',' ID '=' expr)*)? '}'
+   // Array and Record creation
+   | '[' (expr (',' expr)*)? ']' #Array
+   | ID '{' (expr (',' expr)*)? '}' #Record
 
-    // Locations
-    | lvalue
+   // Locations
+   | lvalue #Location
 
-    // Function call
-    | ID '(' (expr (',' expr)*)? ')'
+   // Function call
+   | ID '(' (expr (',' expr)*)? ')' #FuncCall
 
-    // Operations
-    | '-' expr
-    | expr op expr
-    | '(' expr ')'
+   // Operations
+   | op=('-' | '!') expr #Unary
+   | left=expr op=binaryOp right=expr #Binary
+   | '(' expr ')' #Paren
 
-    // Assignment
-    | lvalue '=' expr
+   // Assignment
+   | lvalue '=' expr #Assign
 
-    // Control structures
-    | 'if' expr 'then' expr ('else' expr)?
-    | 'while' expr 'do' exprs
-    | 'break'
-    | 'let' decls 'in' exprs 'end'
-    | 'match' expr 'with' '|' pattern '=>' expr (',' pattern '=>' expr)* ('else' '=>' expr)?
-    ;
+   // Control structures
+   | 'if' expr 'then' expr ('else' expr)? #If
+   | 'while' expr 'do' exprs #While
+   | 'break' #Break
+   | 'let' decls 'in' exprs 'end' #Let
+   | 'match' expr 'with' '|' pattern '=>' expr (',' pattern '=>' expr)* ('else' '=>' expr)? #Match
+   ;
 
 literal
-    : INT_LIT
-    | STRING_LIT
-    | BOOL_LIT
-    | NULL_LIT
-    ;
+   : INT_LIT #IntLit
+   | STRING_LIT #StringLit
+   | BOOL_LIT #BoolLit
+   | NIL_LIT #NilLit
+   ;
 
 pattern
-    : literal
-    | typeId
-    | typeId ('(' pattern ')')?
-    ;
+   : literal
+   | typeId
+   | typeId ('(' pattern ')')?
+   ;
 
 lvalue
-    : ID
-    // Field access
-    | lvalue '.' ID
-    // Array access
-    | lvalue '[' expr ']'
-    ;
+   : ID
+
+   // Field access
+   | lvalue '.' ID
+
+   // Array access
+   | lvalue '[' expr ']'
+   ;
 
 exprs
-    : (expr (';' expr)*)?
-    ;
+   : (expr (';' expr)*)?
+   ;
 
 decls
-    : (decl)*
-    ;
+   : (decl)*
+   ;
 
 decl
-    :
-    // Type declaration
-    'type' ID '=' ty
-    // Variable declarations
-    | vardec
-    // Function declaration
-    | 'fn' ID '(' tyfields ')' (':' typeId)? '=' expr
-    // Extern declaration
-    | 'extern' ID '(' tyfields ')' (':' typeId)?
-    ;
+   :
+   // Type declaration
+   'type' ID '=' ty
+
+   // Variable declarations
+   | vardec
+
+   // Function declaration
+   | 'fn' ID '(' tyfields ')' (':' typeId)? '=' expr
+
+   // Extern declaration
+   | 'extern' ID '(' tyfields ')' (':' typeId)?
+   ;
 
 vardec
-    : ( 'var' | 'val' ) ID (':' typeId)? '=' expr
-    ;
+   : ('var' | 'val') ID (':' typeId)? '=' expr
+   ;
 
 ty
-    :
-    // Type Alias
-    typeId
-    // Record type
-    | '{' tyfields '}'
-    // Array type
-    | '[' typeId ']'
-    ;
+   :
+   // Type Alias
+   typeId
+
+   // Record type
+   | '{' tyfields '}'
+
+   // Array type
+   | '[' typeId ']'
+   ;
 
 tyfields
-    : (ID ':' typeId (',' ID ':' typeId)*)?
-    ;
+   : (ID ':' typeId (',' ID ':' typeId)*)?
+   ;
 
 typeId
-    : ID
-    ;
+   : ID
+   ;
 
-op
-    : '+' | '-' | '*' | '/' | '%' | '&&' | '||' | '<' | '<=' | '>' | '>=' | '!='
-    ;
+binaryOp
+   : '+'
+   | '-'
+   | '*'
+   | '/'
+   | '%'
+   | '&&'
+   | '||'
+   | '<'
+   | '<='
+   | '>'
+   | '>='
+   | '!='
+   ;
+

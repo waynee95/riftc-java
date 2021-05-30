@@ -5,7 +5,6 @@ package me.waynee95.rift.parse;
 }
 
 // Keywords
-
 IF:             'if';
 THEN:           'then';
 ELSE:           'else';
@@ -24,14 +23,12 @@ WITH:           'with';
 EXTERN:         'extern';
 
 // Literals
-
 INT_LIT:        ( '0' | [1-9] ) [0-9]*;
 STRING_LIT:     '"' (~["\\\r\n] | EscapeSequence)* '"';
 BOOL_LIT:       'true' | 'false';
-NULL_LIT:       'nil';
+NIL_LIT:        'nil';
 
 // Separators
-
 LPAREN:         '(';
 RPAREN:         ')';
 LBRACE:         '[';
@@ -60,6 +57,7 @@ GT:             '>';
 GE:             '>=';
 EQ:             '==';
 NOT_EQ:         '!=';
+NOT:            '!';
 
 // Whitespace and Comments
 COMMENT:        '#' ~[\r\n]         -> skip;
