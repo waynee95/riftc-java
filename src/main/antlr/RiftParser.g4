@@ -37,7 +37,7 @@ expr
    | 'while' expr 'do' exprs #While
    | 'break' #Break
    | 'let' decls 'in' exprs 'end' #Let
-   | 'match' expr 'with' '|' pattern '=>' expr (',' pattern '=>' expr)* ('else' '=>' expr)? #Match
+   | 'match' expr 'with' '|' pattern '=>' exprs (',' pattern '=>' exprs)* ('else' '=>' exprs)? #Match
    ;
 
 literal
