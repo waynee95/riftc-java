@@ -1,14 +1,18 @@
 # Rift Language Specification
 
-Rift is derived from the [Tiger](https://www.lrde.epita.fr/~tiger//tiger.pdf)
-language.
+Rift is derived from [Tiger](https://www.lrde.epita.fr/~tiger//tiger.pdf) and [Roost](https://cs.wellesley.edu/~cs301/s19/project/roost-lang.pdf)
+with influences from ML, Ocaml, Kotlin, Scala and Rust. The scope of the language is small by design.
+The language may be expanded with language extensions in the future.
 
 ## Language Features
 
-- Rift is a type-safe language
-- Rift uses local type inference for local variables
-- Rift is expression-focused. Everything has a return value. Side effects return unit `()`.
-- Rift is a garbage-collected language
+- **Strong Static Type System**: Rift is a type-safe language. Rift has support for `record` and `enum` types. There is no implicit type conversion.
+- **Local Type Inference**: Rift uses local type inference to determine the types of local variables without requiring explicit type annotations.
+- **Expression-Focused**: Rift is an expression-focused language; it emphasizes evaluating for result values instead of side effects. Side effects are still supported.
+- **Functions as values**: Rift supports basic higher-order functions. Functions can be passed, stored and returned from functions.
+- **Immutable values**: Mutable values have to explicitly declared to be mutable. There are two keywords to declare variables.
+- **Dynamic Allocation and Garbage Collection**: A garbage collector not only prevents memory leaks but more importantly it ensures memory safety.
+- **Null safety and memory safety**: Rift has no nullable types. Absence of values has to be made explicit using enumeration types. Rift uses runtime checks to prevent errors like array bounds violation and division by zero.
 
 ## Lexical Specifications
 
@@ -16,7 +20,7 @@ language.
 
 The following keywords cannot be used as identifiers:
 
-`if`, `then`, `else`, `while`, `do`, `break`, `let`, `in`, `end`, `nil`, `fn`, `var`, `val`, `type`, `match`, `with`, `extern`, `true`, `false`
+`if`, `then`, `else`, `while`, `do`, `break`, `let`, `in`, `end`, `fn`, `var`, `val`, `type`, `match`, `with`, `extern`, `true`, `false`
 
 ### Identifiers
 
@@ -47,8 +51,6 @@ Array literals are a comma-separated list of expressions surrounded by square
 brackets `[ ..., ... ]`.
 
 The keywords `true` and `false` are boolean literals.
-
-The null reference literal is `nil`.
 
 ## Rift Grammar
 
