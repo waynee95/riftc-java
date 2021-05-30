@@ -33,10 +33,10 @@ expr
    | lvalue '=' expr #Assign
 
    // Control structures
-   | 'if' expr 'then' expr ('else' expr)? #If
-   | 'while' expr 'do' exprs #While
+   | 'if' cond=expr 'then' trueBranch=expr ('else' falseBranch=expr)? #If
+   | 'while' cond=expr 'do' exprs #While
    | 'break' #Break
-   | 'let' decls 'in' exprs 'end' #Let
+   | 'let' (decl (decl)*)? 'in' exprs 'end' #Let
    | 'match' expr 'with' '|' pattern '=>' exprs (',' pattern '=>' exprs)* ('else' '=>' exprs)? #Match
    ;
 
@@ -53,21 +53,13 @@ pattern
    ;
 
 lvalue
-   : ID
-
-   // Field access
-   | lvalue '.' ID
-
-   // Array access
-   | lvalue '[' expr ']'
+   : ID #Name
+   | lvalue '.' ID #FieldAccess
+   | lvalue '[' expr ']' #Index
    ;
 
 exprs
    : (expr (';' expr)*)?
-   ;
-
-decls
-   : (decl)*
    ;
 
 decl
@@ -121,6 +113,7 @@ binaryOp
    | '<='
    | '>'
    | '>='
+   | '=='
    | '!='
    ;
 
