@@ -1,5 +1,7 @@
 package me.waynee95.rift;
 
+import me.waynee95.rift.ast.BuildAstVisitor;
+import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.parse.RiftLexer;
 import me.waynee95.rift.parse.RiftParser;
 import org.antlr.v4.runtime.CharStream;
@@ -31,7 +33,9 @@ class Main implements Runnable {
     @Option(names = "--parse", description = "Run the parser on the input file.")
     boolean parse = false;
 
-    // TODO: --ast to display the AST
+    @Option(names = "--print-ast", description = "Print the AST of the input file.")
+    boolean printAst = false;
+
     // TODO: --typecheck to run the type checker on the input file
 
     public static void main(String[] args) {
@@ -59,7 +63,14 @@ class Main implements Runnable {
             }
 
             RiftParser parser = new RiftParser(new CommonTokenStream(new RiftLexer(input)));
-            parser.program();
+            RiftParser.ProgramContext prog = parser.program();
+
+            Node root = new BuildAstVisitor().visitProgram(prog);
+
+            if (printAst) {
+                System.out.println(root);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
