@@ -1,9 +1,9 @@
 plugins {
-    id 'application'
-    id 'antlr'
+    id "application"
+    id "antlr"
     id "com.diffplug.spotless" version "5.12.5"
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'com.github.jakemarsden.git-hooks' version '0.0.2'
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "com.github.jakemarsden.git-hooks" version "0.0.2"
 }
 
 repositories {
@@ -11,20 +11,20 @@ repositories {
 }
 
 dependencies {
-    antlr 'org.antlr:antlr4:4.9.2'
-    implementation 'com.google.guava:guava:29.0-jre'
-    implementation 'info.picocli:picocli:4.5.1'
-    annotationProcessor 'info.picocli:picocli-codegen:4.5.1'
+    antlr "org.antlr:antlr4:4.9.2"
+    implementation "com.google.guava:guava:29.0-jre"
+    implementation "info.picocli:picocli:4.5.1"
+    annotationProcessor "info.picocli:picocli-codegen:4.5.1"
 }
 
 application {
-    mainClass = 'me.waynee95.rift.Main'
+    mainClass = "me.waynee95.rift.Main"
 }
 
 sourceSets {
     java {
         main {
-            java.srcDirs += 'build/generated-src/**/*.java'
+            java.srcDirs += "build/generated-src/**/*.java"
         }
     }
 }
@@ -32,7 +32,7 @@ sourceSets {
 jar {
     manifest {
         attributes(
-            'Main-class': 'me.waynee95.rift.Main'
+            "Main-class": "me.waynee95.rift.Main"
         )
     }
 }
@@ -40,16 +40,16 @@ jar {
 spotless {
     java {
         targetExclude("build/generated-src/**/*.java")
-        eclipse().configFile(rootProject.file('config/spotless/formatter-settings.xml'))
+        eclipse().configFile(rootProject.file("config/spotless/formatter-settings.xml"))
     }
 }
 
 shadowJar {
-    mainClassName = 'me.waynee95.rift.Main'
+    mainClassName = "me.waynee95.rift.Main"
 }
 
 gitHooks {
-    hooks = ['pre-commit': 'spotlessApply']
+    hooks = ["pre-commit": "spotlessApply"]
 }
 
 generateGrammarSource {
