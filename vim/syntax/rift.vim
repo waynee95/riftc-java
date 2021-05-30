@@ -7,7 +7,7 @@ if exists("b:current_syntax")
   finish
 endif
 
-syn keyword riftKeywords break let in end nil fn var val type extern
+syn keyword riftKeywords break let in end nil fn var val type extern match with
 syn keyword riftRepeat while do
 syn keyword riftConditional if then else
 syn keyword riftBool true false nil
