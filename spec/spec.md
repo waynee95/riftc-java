@@ -54,12 +54,6 @@ The null reference literal is `nil`.
 
 Grammar can be found [here](../src/main/antlr/RiftParser.g4).
 
-Precedence of the `op` operators (high to low):
-
-1. `*` `/`
-2. `+` `-`
-3. `>=` `<=` `=` `<>` `<` `>`
-
 ## Built-in Functions
 
 Rift provides a small set of builtin functions to handle basic I/O operations,
