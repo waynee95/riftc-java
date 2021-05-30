@@ -1,0 +1,22 @@
+let
+  type Tree = Leaf | Node(i64, Tree, Tree)
+
+  val t1 =
+    Node(4,
+      Node(2,
+        Node(1, Leaf, Leaf),
+        Node(3, Leaf, Leaf)
+      ),
+      Node(5,
+        Node(6, Leaf, Leaf),
+        Node(7, Leaf, Leaf)
+      )
+    )
+
+    fn size(t: Tree): i64 =
+      match t with
+        | Leaf => 0
+        | Node(val, left, right) => 1 + size(left) + size(right)
+in
+  print_int(size(t1))
+end
