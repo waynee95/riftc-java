@@ -53,8 +53,8 @@ literal
 
 pattern
    : literal
-   | typeId
-   | typeId ('(' pattern ')')?
+   | TYPE_ID
+   | TYPE_ID ('(' pattern ')')?
    ;
 
 lvalue
@@ -70,38 +70,42 @@ exprs
 decl
    :
    // Type declaration
-   'type' ID '=' ty #TypeDecl
+   'type' TYPE_ID '=' typedec #TypeDecl
 
    // Variable declarations
    | vardec #VarDecl
 
    // Function declaration
-   | 'fn' ID '(' tyfields ')' (':' typeId)? '=' exprs #FuncDecl
+   | 'fn' ID '(' typefields ')' (':' type)? '=' exprs #FuncDecl
 
    // Extern declaration
-   | 'extern' ID '(' tyfields ')' (':' typeId)? #ExternDecl
+   | 'extern' ID '(' typefields ')' (':' type)? #ExternDecl
    ;
 
 vardec
-   : ('var' | 'val') ID (':' typeId)? '=' expr
+   : ('var' | 'val') ID (':' type)? '=' expr
    ;
 
-ty
+typedec
+    // Record Type
+    : '{' typefields '}'
+
+    // Enum Type
+    | TYPE_ID ('(' type ')')? ('|' TYPE_ID ('(' type ')')?)*
+    ;
+
+type
    :
    // Type Alias
-   typeId
-
-   // Record type
-   | '{' tyfields '}'
+   TYPE_ID
 
    // Array type
-   | '[' typeId ']'
+   | '[' type ']'
+
+   // TODO: Func Type
+   // '(' ( type (',' type)* )? '->' type
    ;
 
-tyfields
-   : (ID ':' typeId (',' ID ':' typeId)*)?
-   ;
-
-typeId
-   : ID
+typefields
+   : (ID ':' type (',' ID ':' type)*)?
    ;

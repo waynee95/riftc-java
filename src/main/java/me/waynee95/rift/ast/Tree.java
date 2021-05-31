@@ -146,17 +146,17 @@ public abstract class Tree {
     }
 
     public static class Array extends Node {
-        public final List<Node> Nodes;
+        public final List<Node> elems;
 
-        public Array(List<Node> Nodes, Position pos) {
+        public Array(List<Node> elems, Position pos) {
             super("array", pos);
-            this.Nodes = Nodes;
+            this.elems = elems;
         }
 
         @Override
         public Object getChild(int index) {
             return switch (index) {
-                case 0 -> Nodes;
+                case 0 -> elems;
                 default -> throw new IndexOutOfBoundsException();
             };
         }
@@ -211,6 +211,31 @@ public abstract class Tree {
         @Override
         public int childCount() {
             return 1;
+        }
+    }
+
+    public static class FuncCall extends Node {
+        public final String id;
+        public final List<Node> args;
+
+        public FuncCall(String id, List<Node> args, Position pos) {
+            super("call", pos);
+            this.id = id;
+            this.args = args;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> args;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 2;
         }
     }
 
@@ -437,99 +462,7 @@ public abstract class Tree {
         }
     }
 
-    public static class Param extends Node {
-        public final String id;
-        public final String type;
-
-        public Param(String id, String type, Position pos) {
-            super("param", pos);
-            this.id = id;
-            this.type = type;
-        }
-
-        @Override
-        public Object getChild(int index) {
-            return switch (index) {
-                case 0 -> id;
-                case 1 -> type;
-                default -> throw new IndexOutOfBoundsException();
-            };
-        }
-
-        @Override
-        public int childCount() {
-            return 2;
-        }
-    }
-
-    public static class FuncDecl extends Node {
-        public final String id;
-        public final List<Node> params;
-        public final Optional<String> returnType;
-        public final Node body;
-
-        public FuncDecl(String id, List<Node> params, Optional<String> returnType, Node body,
-                Position pos) {
-            super("func_decl", pos);
-            this.id = id;
-            this.params = params;
-            this.returnType = returnType;
-            this.body = body;
-        }
-
-        @Override
-        public Object getChild(int index) {
-            return switch (index) {
-                case 0 -> id;
-                case 1 -> params;
-                case 2 -> returnType;
-                case 3 -> body;
-                default -> throw new IndexOutOfBoundsException();
-            };
-        }
-
-        @Override
-        public int childCount() {
-            return 4;
-        }
-    }
-
-    public static class ExternDecl extends Node {
-        public final String id;
-        public final List<Node> params;
-        public final Optional<String> returnType;
-
-        public ExternDecl(String id, List<Node> params, Optional<String> returnType, Position pos) {
-            super("extern_decl", pos);
-            this.id = id;
-            this.params = params;
-            this.returnType = returnType;
-        }
-
-        @Override
-        public Object getChild(int index) {
-            return switch (index) {
-                case 0 -> id;
-                case 1 -> params;
-                case 2 -> returnType;
-                default -> throw new IndexOutOfBoundsException();
-            };
-        }
-
-        @Override
-        public int childCount() {
-            return 3;
-        }
-    }
-
-
-    // TODO: TypeDecl
-    // TODO: TypeName
-    // TODO: RecordType
-    // TODO: ArrayType
+    // TODO: Decls
     // TODO: Pattern
     // TODO: Match
-
-    // TODO: Create distinct test files for all cases!
-
 }
