@@ -15,6 +15,8 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Command(name = "riftc", version = "0.0.0",
         description = "A compiler for the Rift programming language.", sortOptions = false)
@@ -48,6 +50,11 @@ class Main implements Runnable {
         }
 
         try {
+            if (!Files.exists(Path.of(filePath))) {
+                System.err.println("error: " + filePath + " does not exist.");
+                System.exit(-1);
+            }
+
             CharStream input = CharStreams.fromFileName(filePath);
 
             if (lexTrace) {
