@@ -2,6 +2,7 @@ package me.waynee95.rift.ast;
 
 import me.waynee95.rift.parse.RiftParser;
 import me.waynee95.rift.parse.RiftParserBaseVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
             params.add(visit(expr));
         }
         var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Record(ctx.ID().getText(), params, pos);
+        return new Tree.Record(ctx.TYPE_ID().getText(), params, pos);
     }
 
     @Override
@@ -161,5 +162,62 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
         var body = visit(ctx.exprs());
         var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         return new Tree.Let(decls, body, pos);
+    }
+
+    @Override
+    public Node visitType(RiftParser.TypeContext ctx) {
+        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+        if (ctx.INT() != null) {
+            return new Tree.TInt(pos);
+        } else if (ctx.BOOL() != null) {
+            return new Tree.TBool(pos);
+        } else if (ctx.STRING() != null) {
+            return new Tree.TString(pos);
+        } else if (ctx.TYPE_ID() != null) {
+            return new Tree.TCustom(pos);
+        } else {
+            return new Tree.TArray((Tree.TypeLit) visit(ctx.type()), pos);
+        }
+    }
+
+    @Override
+    public Node visitVarDecl(RiftParser.VarDeclContext ctx) {
+        Tree.TypeLit type = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
+        var immutable = ctx.VAL() != null ? true : false;
+        var value = visit(ctx.expr());
+        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+        return new Tree.VarDecl(ctx.ID().getText(), Optional.of(value), Optional.ofNullable(type),
+                immutable, pos);
+    }
+
+    @Override
+    public Node visitFuncDecl(RiftParser.FuncDeclContext ctx) {
+        List<Tree.VarDecl> params = new ArrayList<>();
+        for (TerminalNode param : ctx.typefields().ID()) {
+            var pos = new Position(param.getSymbol().getLine(),
+                    param.getSymbol().getCharPositionInLine());
+            Tree.TypeLit type = (Tree.TypeLit) visit(ctx.type());
+            params.add(new Tree.VarDecl(param.getText(), Optional.of(type), pos));
+        }
+        Tree.TypeLit returnType = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
+        Node body = visit(ctx.exprs());
+        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+        return new Tree.FuncDecl(ctx.ID().getText(), params, Optional.ofNullable(returnType), body,
+                pos);
+    }
+
+    @Override
+    public Node visitExternDecl(RiftParser.ExternDeclContext ctx) {
+        List<Tree.VarDecl> params = new ArrayList<>();
+        for (TerminalNode param : ctx.typefields().ID()) {
+            var pos = new Position(param.getSymbol().getLine(),
+                    param.getSymbol().getCharPositionInLine());
+            Tree.TypeLit type = (Tree.TypeLit) visit(ctx.type());
+            params.add(new Tree.VarDecl(param.getText(), Optional.of(type), pos));
+        }
+        Tree.TypeLit returnType = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
+        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
+        return new Tree.ExternDecl(ctx.ID().getText(), params, Optional.ofNullable(returnType),
+                pos);
     }
 }

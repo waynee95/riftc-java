@@ -1,5 +1,7 @@
 package me.waynee95.rift.ast;
 
+import me.waynee95.rift.type.Type;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -430,20 +432,143 @@ public abstract class Tree {
         }
     }
 
+    public static abstract class TypeLit extends Node {
+        public Type type;
+
+        public TypeLit(String displayName, Position pos) {
+            super(displayName, pos);
+        }
+    }
+
+    public static final class TInt extends TypeLit {
+        public TInt(Position pos) {
+            super("type_int", pos);
+        }
+
+        @Override
+        public Object getChild(int index) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public int childCount() {
+            return 0;
+        }
+    }
+
+    public static final class TBool extends TypeLit {
+        public TBool(Position pos) {
+            super("type_bool", pos);
+        }
+
+        @Override
+        public Object getChild(int index) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public int childCount() {
+            return 0;
+        }
+    }
+
+    public static final class TString extends TypeLit {
+        public TString(Position pos) {
+            super("type_string", pos);
+        }
+
+        @Override
+        public Object getChild(int index) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public int childCount() {
+            return 0;
+        }
+    }
+
+    public static final class TCustom extends TypeLit {
+        public TCustom(Position pos) {
+            super("type_custom", pos);
+        }
+
+        @Override
+        public Object getChild(int index) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public int childCount() {
+            return 0;
+        }
+    }
+
+    public static final class TArray extends TypeLit {
+        public final TypeLit elemType;
+
+        public TArray(TypeLit elemType, Position pos) {
+            super("type_array", pos);
+            this.elemType = elemType;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public int childCount() {
+            return 0;
+        }
+    }
+
+    public static class TypeDecl extends Node {
+        public final String id;
+        public final Type type;
+
+        public TypeDecl(String id, Type type, Position pos) {
+            super("type_decl", pos);
+            this.id = id;
+            this.type = type;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> type;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 2;
+        }
+    }
+
     public static class VarDecl extends Node {
         public final String id;
-        public final Node value;
+        public final Optional<Node> value;
+        public final Optional<TypeLit> typeLit;
         public final boolean immutable;
-        // TODO: Introduce proper type
-        public final Optional<String> type;
 
-        public VarDecl(String id, Node value, Optional<String> type, boolean immutable,
-                Position pos) {
+        public VarDecl(String id, Optional<Node> value, Optional<TypeLit> typeLit,
+                boolean immutable, Position pos) {
             super("var_decl", pos);
             this.id = id;
             this.value = value;
-            this.type = type;
+            this.typeLit = typeLit;
             this.immutable = immutable;
+        }
+
+        public VarDecl(String id, Optional<TypeLit> typeLit, Position pos) {
+            super("var_decl", pos);
+            this.id = id;
+            this.value = Optional.empty();
+            this.typeLit = typeLit;
+            this.immutable = false;
         }
 
         @Override
@@ -451,7 +576,68 @@ public abstract class Tree {
             return switch (index) {
                 case 0 -> id;
                 case 1 -> value;
-                case 2 -> type;
+                case 2 -> typeLit;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 3;
+        }
+    }
+
+    public static class FuncDecl extends Node {
+        public final String id;
+        public final List<VarDecl> params;
+        public final Optional<TypeLit> returnType;
+        public final Node body;
+
+        public FuncDecl(String id, List<VarDecl> params, Optional<TypeLit> returnType, Node body,
+                Position pos) {
+            super("func_decl", pos);
+            this.id = id;
+            this.params = params;
+            this.returnType = returnType;
+            this.body = body;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> params;
+                case 2 -> returnType;
+                case 3 -> body;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 4;
+        }
+    }
+
+    public static class ExternDecl extends Node {
+        public final String id;
+        public List<VarDecl> params;
+        public Optional<TypeLit> returnType;
+
+        public ExternDecl(String id, List<VarDecl> params, Optional<TypeLit> returnType,
+                Position pos) {
+            super("extern_decl", pos);
+            this.id = id;
+            this.params = params;
+            this.returnType = returnType;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> params;
+                case 2 -> returnType;
                 default -> throw new IndexOutOfBoundsException();
             };
         }
