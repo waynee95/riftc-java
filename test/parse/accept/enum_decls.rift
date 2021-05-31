@@ -1,0 +1,7 @@
+let
+  type Fruit = Apple | Banana | Cherry
+  type List = Nil | List(i64, List)
+  type Tree = Leaf | Node(i64, Tree, Tree)
+  type OptionalString = Some(string) | None
+in
+end

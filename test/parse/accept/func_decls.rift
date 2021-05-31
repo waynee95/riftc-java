@@ -1,0 +1,10 @@
+let
+  fn add(x: i64, y: i64): i64 = x + y
+  fn add1(x: i64): i64 = add(x, 1)
+
+  fn hello_world(): string = "Hello, World!"
+
+  fn f(x: i64): i64 =
+    let var y = x * 2 in x + y end
+in
+end
