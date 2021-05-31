@@ -34,3 +34,9 @@ $ ./riftc [options] FILE
 | `--parse-trace` |  Trace the result of the parser.  |
 |    `--parse`    | Run the parser on the input file. |
 |  `--print-ast`  |       Print resulting AST.        |
+
+## References
+
+- Crafting a Compiler by Fisher et al.
+- https://github.com/decaf-lang/decaf
+- https://github.com/munificent/magpie/tree/master/src/com/stuffwithstuff/magpie
