@@ -5,7 +5,7 @@ parser grammar RiftParser;
 package me.waynee95.rift.parse;
 }
 
-options { tokenVocab = RiftLexer; }
+options { tokenVocab=RiftLexer; }
 program
    : expr
    ;
@@ -16,7 +16,7 @@ expr
 
    // Array and Record creation
    | '[' (expr (',' expr)*)? ']' #Array
-   | ID '{' (expr (',' expr)*)? '}' #Record
+   | TYPE_ID '{' (expr (',' expr)*)? '}' #Record
 
    // Locations
    | lvalue #Location
@@ -73,7 +73,7 @@ decl
    'type' TYPE_ID '=' typedec #TypeDecl
 
    // Variable declarations
-   | vardec #VarDecl
+   | ('var' | 'val') ID (':' type)? '=' expr #VarDecl
 
    // Function declaration
    | 'fn' ID '(' typefields ')' (':' type)? '=' exprs #FuncDecl
@@ -82,22 +82,22 @@ decl
    | 'extern' ID '(' typefields ')' (':' type)? #ExternDecl
    ;
 
-vardec
-   : ('var' | 'val') ID (':' type)? '=' expr
+typedec
+   // Record Type
+   : '{' typefields '}'
+
+   // Enum Type
+   | TYPE_ID ('(' type (',' type)* ')')? ('|' TYPE_ID ('(' type (',' type)* ')')?)*
    ;
 
-typedec
-    // Record Type
-    : '{' typefields '}'
-
-    // Enum Type
-    | TYPE_ID ('(' type ')')? ('|' TYPE_ID ('(' type ')')?)*
-    ;
-
 type
-   :
-   // Type Alias
-   TYPE_ID
+   // Builtin Types
+   : INT
+   | BOOL
+   | STRING
+
+   // Custom Types
+   | TYPE_ID
 
    // Array type
    | '[' type ']'
@@ -109,3 +109,4 @@ type
 typefields
    : (ID ':' type (',' ID ':' type)*)?
    ;
+
