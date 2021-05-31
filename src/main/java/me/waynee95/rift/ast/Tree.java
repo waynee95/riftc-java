@@ -405,14 +405,130 @@ public abstract class Tree {
         }
     }
 
-    // TODO: VarDecl
-    // TODO: TypeDecl
-    // TODO: FuncDecl
-    // TODO: ExternDecl
+    public static class VarDecl extends Node {
+        public final String id;
+        public final Node value;
+        public final boolean immutable;
+        // TODO: Introduce proper type
+        public final Optional<String> type;
 
+        public VarDecl(String id, Node value, Optional<String> type, boolean immutable,
+                Position pos) {
+            super("var_decl", pos);
+            this.id = id;
+            this.value = value;
+            this.type = type;
+            this.immutable = immutable;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> value;
+                case 2 -> type;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 3;
+        }
+    }
+
+    public static class Param extends Node {
+        public final String id;
+        public final String type;
+
+        public Param(String id, String type, Position pos) {
+            super("param", pos);
+            this.id = id;
+            this.type = type;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> type;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 2;
+        }
+    }
+
+    public static class FuncDecl extends Node {
+        public final String id;
+        public final List<Node> params;
+        public final Optional<String> returnType;
+        public final Node body;
+
+        public FuncDecl(String id, List<Node> params, Optional<String> returnType, Node body,
+                Position pos) {
+            super("func_decl", pos);
+            this.id = id;
+            this.params = params;
+            this.returnType = returnType;
+            this.body = body;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> params;
+                case 2 -> returnType;
+                case 3 -> body;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 4;
+        }
+    }
+
+    public static class ExternDecl extends Node {
+        public final String id;
+        public final List<Node> params;
+        public final Optional<String> returnType;
+
+        public ExternDecl(String id, List<Node> params, Optional<String> returnType, Position pos) {
+            super("extern_decl", pos);
+            this.id = id;
+            this.params = params;
+            this.returnType = returnType;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> params;
+                case 2 -> returnType;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 3;
+        }
+    }
+
+
+    // TODO: TypeDecl
     // TODO: TypeName
     // TODO: RecordType
     // TODO: ArrayType
+    // TODO: Pattern
+    // TODO: Match
 
     // TODO: Create distinct test files for all cases!
 
