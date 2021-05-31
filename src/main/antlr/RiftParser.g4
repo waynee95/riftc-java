@@ -26,7 +26,12 @@ expr
 
    // Operations
    | op=('-' | '!') expr #Unary
-   | left=expr op=binaryOp right=expr #Binary
+   | left=expr op=('*' | '/' | '%') right=expr #Binary
+   | left=expr op=('+' | '-') right=expr #Binary
+   | left=expr op=('<' | '<=' | '>' | '>=') right=expr #Binary
+   | left=expr op=('==' | '!=') right=expr #Binary
+   | left=expr op='&&' right=expr #Binary
+   | left=expr op='||' right=expr #Binary
    | '(' expr ')' #Paren
 
    // Assignment
@@ -65,16 +70,16 @@ exprs
 decl
    :
    // Type declaration
-   'type' ID '=' ty
+   'type' ID '=' ty #TypeDecl
 
    // Variable declarations
-   | vardec
+   | vardec #VarDecl
 
    // Function declaration
-   | 'fn' ID '(' tyfields ')' (':' typeId)? '=' expr
+   | 'fn' ID '(' tyfields ')' (':' typeId)? '=' exprs #FuncDecl
 
    // Extern declaration
-   | 'extern' ID '(' tyfields ')' (':' typeId)?
+   | 'extern' ID '(' tyfields ')' (':' typeId)? #ExternDecl
    ;
 
 vardec
@@ -100,20 +105,3 @@ tyfields
 typeId
    : ID
    ;
-
-binaryOp
-   : '+'
-   | '-'
-   | '*'
-   | '/'
-   | '%'
-   | '&&'
-   | '||'
-   | '<'
-   | '<='
-   | '>'
-   | '>='
-   | '=='
-   | '!='
-   ;
-
