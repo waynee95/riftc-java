@@ -63,6 +63,7 @@ COMMENT:        '#' ~[\r\n]         -> skip;
 WS:             [ \t\u000C\r\n]+    -> skip;
 
 // Identifiers
+TYPE_ID:        [A-Z] [A-Za-z0-9_]*;
 ID:             [A-Za-z_] [A-Za-z0-9_]*;
 
 fragment EscapeSequence
