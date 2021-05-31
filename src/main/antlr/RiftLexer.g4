@@ -21,6 +21,9 @@ TYPE:           'type';
 MATCH:          'match';
 WITH:           'with';
 EXTERN:         'extern';
+INT:            'i64';
+BOOL:           'bool';
+STRING:         'string';
 
 // Literals
 INT_LIT:        ( '0' | [1-9] ) [0-9]*;
