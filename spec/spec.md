@@ -167,18 +167,18 @@ binaryOp
   ;
 ```
 
-With the following precedence rules. High means "tightest" binding.
+With the following precedence rules. From "tightest" binding to lowest.
 
-| Level | Operator    | Description                              | Associativity |
-| ----- | ----------- | ---------------------------------------- | ------------- |
-|       | `[] . ()`   | array index, field access, function call | left          |
-|       | `- !`       | unary minus, boolean complement          | right         |
-|       | `* / %`     | multiplication, division, remainder      | left          |
-|       | `+ -`       | addition, subtraction                    | left          |
-|       | `< <= > >=` | relational operators                     | left          |
-|       | `== !=`     | equality operators                       | left          |
-|       | `&&`        | short-circuit boolean and                | left          |
-|       | `\|\|`      | short-circuit boolean or                 | left          |
+| Operator    | Description                              | Associativity |
+| ----------- | ---------------------------------------- | ------------- |
+| `[] . ()`   | array index, field access, function call | left          |
+| `- !`       | unary minus, boolean complement          | right         |
+| `* / %`     | multiplication, division, remainder      | left          |
+| `+ -`       | addition, subtraction                    | left          |
+| `< <= > >=` | relational operators                     | left          |
+| `== !=`     | equality operators                       | left          |
+| `&&`        | short-circuit boolean and                | left          |
+| `\|\|`      | short-circuit boolean or                 | left          |
 
 ## Built-in Functions
 
