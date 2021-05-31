@@ -54,7 +54,131 @@ The keywords `true` and `false` are boolean literals.
 
 ## Rift Grammar
 
-Grammar can be found [here](../src/main/antlr/RiftParser.g4).
+```
+program
+  : expr
+  ;
+
+expr
+  // Literals
+  : literal
+
+  // Array and Record creation
+  | '[' (expr (',' expr)*)? ']'
+  | ID '{' (expr (',' expr)*)? '}'
+
+  // Locations
+  | lvalue
+
+  // Function call
+  | ID '(' (expr (',' expr)*)? ')'
+
+  // Operations
+  | ('-' | '!') expr
+  | expr binaryOp expr
+  | '(' expr ')'
+
+  // Assignment
+  | lvalue '=' expr
+
+  // Control structures
+  | 'if' expr 'then' expr ('else' expr)?
+  | 'while' expr 'do' exprs
+  | 'break'
+  | 'let' (decl (decl)*)? 'in' exprs 'end'
+  | 'match' expr 'with' '|' pattern '=>' exprs (',' pattern '=>' exprs)* ('else' '=>' exprs)?
+  ;
+
+literal
+  : INT_LIT
+  | STRING_LIT
+  | BOOL_LIT
+  ;
+
+pattern
+  : literal
+  | typeId
+  | typeId ('(' pattern ')')?
+  ;
+
+lvalue
+  : ID
+  | lvalue '.' ID
+  | lvalue '[' expr ']'
+  ;
+
+exprs
+  : (expr (';' expr)*)?
+  ;
+
+decl
+  :
+  // Type declaration
+  'type' ID '=' ty
+
+  // Variable declarations
+  | vardec
+
+  // Function declaration
+  | 'fn' ID '(' tyfields ')' (':' typeId)? '=' exprs
+
+  // Extern declaration
+  | 'extern' ID '(' tyfields ')' (':' typeId)?
+  ;
+
+vardec
+  : ('var' | 'val') ID (':' typeId)? '=' expr
+  ;
+
+ty
+  :
+  // Type Alias
+  typeId
+
+  // Record type
+  | '{' tyfields '}'
+
+  // Array type
+  | '[' typeId ']'
+  ;
+
+tyfields
+  : (ID ':' typeId (',' ID ':' typeId)*)?
+  ;
+
+typeId
+  : ID
+  ;
+
+binaryOp
+  : '+'
+  | '-'
+  | '*'
+  | '/'
+  | '%'
+  | '&&'
+  | '||'
+  | '<'
+  | '<='
+  | '>'
+  | '>='
+  | '=='
+  | '!='
+  ;
+```
+
+With the following precedence rules. High means "tightest" binding.
+
+| Level | Operator    | Description                              | Associativity |
+| ----- | ----------- | ---------------------------------------- | ------------- |
+|       | `[] . ()`   | array index, field access, function call | left          |
+|       | `- !`       | unary minus, boolean complement          | right         |
+|       | `* / %`     | multiplication, division, remainder      | left          |
+|       | `+ -`       | addition, subtraction                    | left          |
+|       | `< <= > >=` | relational operators                     | left          |
+|       | `== !=`     | equality operators                       | left          |
+|       | `&&`        | short-circuit boolean and                | left          |
+|       | `\|\|`      | short-circuit boolean or                 | left          |
 
 ## Built-in Functions
 
