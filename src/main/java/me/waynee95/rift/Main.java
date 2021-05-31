@@ -28,9 +28,6 @@ class Main implements Runnable {
     @Option(names = "--lex-trace", description = "Trace the result of the lexer.")
     boolean lexTrace = false;
 
-    @Option(names = "--parse-trace", description = "Trace the result of the parser.")
-    boolean parseTrace = false;
-
     @Option(names = "--parse", description = "Run the parser on the input file.")
     boolean parse = false;
 
