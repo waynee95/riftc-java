@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -78,7 +79,7 @@ class Main implements Runnable {
                 if (printAst) {
                     System.out.println(ast);
                 }
-            } catch (Exception e) {
+            } catch (ParseCancellationException e) {
                 System.err.println("error: " + e.getMessage());
                 System.err.println("\nRejected.");
                 System.exit(-1);
