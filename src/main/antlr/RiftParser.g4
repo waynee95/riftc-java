@@ -47,7 +47,7 @@ expr
    ;
 
 exprs
-    : (expr (',' expr)*)?
+    : (expr (';' expr)*)?
     ;
 
 lvalue
