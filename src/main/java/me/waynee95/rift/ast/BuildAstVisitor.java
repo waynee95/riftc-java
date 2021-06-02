@@ -2,7 +2,7 @@ package me.waynee95.rift.ast;
 
 import me.waynee95.rift.parse.RiftParser;
 import me.waynee95.rift.parse.RiftParserBaseVisitor;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,39 +167,70 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
         Tree.TypeLit type = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
         var immutable = ctx.VAL() != null ? true : false;
         var value = visit(ctx.expr());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         return new Tree.VarDecl(ctx.ID().getText(), Optional.of(value), Optional.ofNullable(type),
-                immutable, pos);
+                immutable, ctx);
     }
 
     @Override
     public Node visitFuncDecl(RiftParser.FuncDeclContext ctx) {
         List<Tree.VarDecl> params = new ArrayList<>();
-        for (TerminalNode param : ctx.typefields().ID()) {
-            var pos = new Position(param.getSymbol().getLine(),
-                    param.getSymbol().getCharPositionInLine());
-            Tree.TypeLit type = (Tree.TypeLit) visit(ctx.type());
-            params.add(new Tree.VarDecl(param.getText(), Optional.of(type), pos));
+        Tree.TypeLit returnType = null;
+        var id = ctx.ID().getText();
+        var body = visit(ctx.exprs());
+        if (ctx.type() != null) {
+            returnType = (Tree.TypeLit) visit(ctx.type());
         }
-        Tree.TypeLit returnType = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
-        Node body = visit(ctx.exprs());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.FuncDecl(ctx.ID().getText(), params, Optional.ofNullable(returnType), body,
-                pos);
+        for (int i = 0; i < ctx.typefields().ID().size(); i++) {
+            var param = ctx.typefields().ID(i).getText();
+            Tree.TypeLit type = (Tree.TypeLit) visit(ctx.typefields().type(i));
+            params.add(new Tree.VarDecl(param, Optional.of(type), ctx));
+        }
+        return new Tree.FuncDecl(id, params, Optional.ofNullable(returnType), body, ctx);
     }
 
     @Override
     public Node visitExternDecl(RiftParser.ExternDeclContext ctx) {
         List<Tree.VarDecl> params = new ArrayList<>();
-        for (TerminalNode param : ctx.typefields().ID()) {
-            var pos = new Position(param.getSymbol().getLine(),
-                    param.getSymbol().getCharPositionInLine());
-            Tree.TypeLit type = (Tree.TypeLit) visit(ctx.type());
-            params.add(new Tree.VarDecl(param.getText(), Optional.of(type), pos));
+        Tree.TypeLit returnType = null;
+        var id = ctx.ID().getText();
+        if (ctx.type() != null) {
+            returnType = (Tree.TypeLit) visit(ctx.type());
         }
-        Tree.TypeLit returnType = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.ExternDecl(ctx.ID().getText(), params, Optional.ofNullable(returnType),
-                pos);
+        for (int i = 0; i < ctx.typefields().ID().size(); i++) {
+            var param = ctx.typefields().ID(i).getText();
+            Tree.TypeLit type = (Tree.TypeLit) visit(ctx.typefields().type(i));
+            params.add(new Tree.VarDecl(param, Optional.of(type), ctx));
+        }
+        return new Tree.ExternDecl(id, params, Optional.ofNullable(returnType), ctx);
     }
+
+    @Override
+    public Node visitTypeDecl(RiftParser.TypeDeclContext ctx) {
+        var id = ctx.TYPE_ID().getText();
+        // Record
+        if (ctx.typedec().LCURLY() != null) {
+            List<Pair<String, Tree.TypeLit>> fields = new ArrayList<>();
+            for (int i = 0; i < ctx.typedec().typefields().ID().size(); i++) {
+                var param = ctx.typedec().typefields().ID(i).getText();
+                Tree.TypeLit type = (Tree.TypeLit) visit(ctx.typedec().typefields().type(i));
+                fields.add(new Pair<>(param, type));
+            }
+            return new Tree.RecordTypeDecl(id, fields, ctx);
+        } else {
+            // Enum
+            List<Pair<String, List<Tree.TypeLit>>> constructors = new ArrayList<>();
+            for (RiftParser.ConstructorContext constructor : ctx.typedec().constructor()) {
+                List<Tree.TypeLit> types = new ArrayList<>();
+                for (RiftParser.TypeContext type : constructor.type()) {
+                    types.add((Tree.TypeLit) visit(type));
+                }
+                constructors.add(new Pair<>(constructor.TYPE_ID().getText(), types));
+            }
+            return new Tree.EnumTypeDecl(id, constructors, ctx);
+        }
+    }
+
+    // TODO: Helper functions for typefields, constructor and pattern
+    // TODO: visitPattern
+    // TODO: visitMatch
 }

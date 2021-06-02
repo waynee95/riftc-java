@@ -1,6 +1,8 @@
 package me.waynee95.rift.ast;
 
 import me.waynee95.rift.type.Type;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.List;
 import java.util.Optional;
@@ -490,55 +492,92 @@ public abstract class Tree {
     }
 
     public static final class TCustom extends TypeLit {
-        public TCustom(Position pos) {
-            super("type_custom", pos);
-        }
-
-        @Override
-        public Object getChild(int index) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        @Override
-        public int childCount() {
-            return 0;
-        }
-    }
-
-    public static final class TArray extends TypeLit {
-        public final TypeLit elemType;
-
-        public TArray(TypeLit elemType, Position pos) {
-            super("type_array", pos);
-            this.elemType = elemType;
-        }
-
-        @Override
-        public Object getChild(int index) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        @Override
-        public int childCount() {
-            return 0;
-        }
-    }
-
-    public static class TypeDecl extends Node {
         public final String id;
-        public final Type type;
 
-        public TypeDecl(String id, Type type, Position pos) {
-            super("type_decl", pos);
+        public TCustom(String id, ParserRuleContext context) {
+            super("type_custom", context);
             this.id = id;
-            this.type = type;
         }
 
         @Override
         public Object getChild(int index) {
             return switch (index) {
                 case 0 -> id;
-                case 1 -> type;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 1;
+        }
+    }
+
+    public static final class TArray extends TypeLit {
+        public final TypeLit elemType;
+
+        public TArray(TypeLit elemType, ParserRuleContext context) {
+            super("type_array", context);
+            this.elemType = elemType;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> elemType;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 1;
+        }
+    }
+
+    public static class RecordTypeDecl extends Node {
+        public final String id;
+        public final List<Pair<String, TypeLit>> fields;
+        public Type type;
+
+        public RecordTypeDecl(String id, List<Pair<String, TypeLit>> fields,
+                ParserRuleContext context) {
+            super("record_type_decl", context);
+            this.id = id;
+            this.fields = fields;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> fields;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 2;
+        }
+    }
+
+    public static class EnumTypeDecl extends Node {
+        public final String id;
+        public final List<Pair<String, List<TypeLit>>> constructors;
+
+        public EnumTypeDecl(String id, List<Pair<String, List<TypeLit>>> constructors,
+                ParserRuleContext context) {
+            super("enum_type_decl", context);
+            this.id = id;
+            this.constructors = constructors;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> constructors;
                 default -> throw new IndexOutOfBoundsException();
             };
         }
