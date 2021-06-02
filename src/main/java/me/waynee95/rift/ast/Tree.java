@@ -1,5 +1,6 @@
 package me.waynee95.rift.ast;
 
+import me.waynee95.rift.ast.pattern.MatchCase;
 import me.waynee95.rift.type.Type;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
@@ -177,6 +178,32 @@ public abstract class Tree {
 
         public Record(String id, List<Node> params, ParserRuleContext context) {
             super("record", context);
+            this.id = id;
+            this.params = params;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> id;
+                case 1 -> params;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 2;
+        }
+    }
+
+    public static class Constructor extends Node {
+        public final String id;
+        public final List<Node> params;
+
+
+        public Constructor(String id, List<Node> params, ParserRuleContext context) {
+            super("constructor", context);
             this.id = id;
             this.params = params;
         }
@@ -688,7 +715,28 @@ public abstract class Tree {
         }
     }
 
-    // TODO: Decls
-    // TODO: Pattern
-    // TODO: Match
+    public static class Match extends Node {
+        public final Node expr;
+        public final List<MatchCase> cases;
+
+        public Match(Node expr, List<MatchCase> cases, ParserRuleContext context) {
+            super("match", context);
+            this.expr = expr;
+            this.cases = cases;
+        }
+
+        @Override
+        public Object getChild(int index) {
+            return switch (index) {
+                case 0 -> expr;
+                case 1 -> cases;
+                default -> throw new IndexOutOfBoundsException();
+            };
+        }
+
+        @Override
+        public int childCount() {
+            return 2;
+        }
+    }
 }

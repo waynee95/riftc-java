@@ -14,9 +14,10 @@ expr
    // Literals
    : literal #Lit
 
-   // Array and Record creation
+   // Array and Type instantiation
    | '[' (expr (',' expr)*)? ']' #Array
    | TYPE_ID '{' (expr (',' expr)*)? '}' #Record
+   | TYPE_ID ('(' expr (',' expr)* ')' )? #Cons
 
    // Locations
    | lvalue #Location
@@ -42,7 +43,7 @@ expr
    | 'while' cond=expr 'do' exprs #While
    | 'break' #Break
    | 'let' (decl (decl)*)? 'in' exprs 'end' #Let
-   | 'match' expr 'with' matchcases ('else' '=>' exprs)? #Match
+   | 'match' expr 'with' matchcases ('|' 'else' '=>' exprs)? #Match
    ;
 
 exprs
@@ -60,9 +61,10 @@ matchcases
     ;
 
 pattern
-   : literal
-   | ID
-   | TYPE_ID '(' pattern ')'
+   : literal #LiteralPattern
+   | TYPE_ID ('(' pattern (',' pattern)* ')')? #ConstructorPattern
+   | ID #VariablePattern
+   | '{' ID (',' ID)* '}' #RecordPattern
    ;
 
 decl

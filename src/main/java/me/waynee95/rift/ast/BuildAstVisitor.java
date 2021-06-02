@@ -1,8 +1,10 @@
 package me.waynee95.rift.ast;
 
+import me.waynee95.rift.ast.pattern.*;
 import me.waynee95.rift.parse.RiftParser;
 import me.waynee95.rift.parse.RiftParserBaseVisitor;
 import org.antlr.v4.runtime.misc.Pair;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,15 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     }
 
     @Override
+    public Node visitCons(RiftParser.ConsContext ctx) {
+        List<Node> params = new ArrayList<>();
+        for (var expr : ctx.expr()) {
+            params.add(visit(expr));
+        }
+        return new Tree.Constructor(ctx.TYPE_ID().getText(), params, ctx);
+    }
+
+    @Override
     public Node visitName(RiftParser.NameContext ctx) {
         return new Tree.Name(ctx.ID().getText(), ctx);
     }
@@ -119,9 +130,9 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     @Override
     public Node visitExprs(RiftParser.ExprsContext ctx) {
         List<Node> exprs = new ArrayList<>();
-        // for (RiftParser.ExprContext expr : ctx.expr()) {
-        // exprs.add((Node) visit(expr));
-        // }
+        for (RiftParser.ExprContext expr : ctx.expr()) {
+            exprs.add((Node) visit(expr));
+        }
         return new Tree.Body(exprs, ctx);
     }
 
@@ -230,7 +241,53 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
         }
     }
 
-    // TODO: Helper functions for typefields, constructor and pattern
-    // TODO: visitPattern
-    // TODO: visitMatch
+    @Override
+    public Node visitLiteralPattern(RiftParser.LiteralPatternContext ctx) {
+        return new ValuePattern(visit(ctx.literal()), ctx);
+    }
+
+    @Override
+    public Node visitConstructorPattern(RiftParser.ConstructorPatternContext ctx) {
+        List<Pattern> fields = new ArrayList<>();
+        var id = ctx.TYPE_ID().getText();
+        if (ctx.LPAREN() != null) {
+            for (RiftParser.PatternContext pattern : ctx.pattern()) {
+                fields.add((Pattern) visit(pattern));
+            }
+        }
+        return new ConstructorPattern(id, fields, ctx);
+    }
+
+
+    @Override
+    public Node visitRecordPattern(RiftParser.RecordPatternContext ctx) {
+        List<String> fields = new ArrayList<>();
+        for (TerminalNode fieldName : ctx.ID()) {
+            fields.add(fieldName.getText());
+        }
+        return new RecordPattern(fields, ctx);
+    }
+
+    @Override
+    public Node visitVariablePattern(RiftParser.VariablePatternContext ctx) {
+        return new VariablePattern(ctx.ID().getText(), ctx);
+    }
+
+    @Override
+    public Node visitMatch(RiftParser.MatchContext ctx) {
+        List<MatchCase> cases = new ArrayList<>();
+        var expr = visit(ctx.expr());
+
+        for (int i = 0; i < ctx.matchcases().pattern().size(); i++) {
+            var pattern = visit(ctx.matchcases().pattern(i));
+            var body = visit(ctx.matchcases().exprs(i));
+            cases.add(new MatchCase((Pattern) pattern, body, ctx));
+        }
+
+        if (ctx.ELSE() != null) {
+            var body = visit(ctx.exprs());
+            cases.add(new MatchCase(new WildCard(ctx), body, ctx));
+        }
+        return new Tree.Match(expr, cases, ctx);
+    }
 }
