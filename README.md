@@ -6,7 +6,7 @@
 
 - [x] Lexer
 - [x] Parser
-- [ ] AST
+- [x] AST
 - [ ] Type Checking
 - [ ] TAC Gen
 - [ ] Backend
