@@ -1,6 +1,7 @@
 bin
 build
 gen
+*.tokens
 .gradle
 .project
 .classpath
