@@ -15,7 +15,7 @@ let
 
   fn print_linked_list(l: List) =
     match l with
-      | Link(val, rest) => print_int(val); print_linked_list(rest)
+      | Link({ val, rest }) => print_int(val); print_linked_list(rest)
       | Empty => print("_")
 in
   print_linked_list(l1)
