@@ -9,8 +9,8 @@ public abstract class Tree {
     public static class Program extends Node {
         public final Node Node;
 
-        public Program(Node Node, Position pos) {
-            super("prog", pos);
+        public Program(Node Node, ParserRuleContext context) {
+            super("prog", context);
             this.Node = Node;
         }
 
@@ -31,8 +31,8 @@ public abstract class Tree {
     public static class IntLit extends Node {
         public long value;
 
-        public IntLit(long value, Position pos) {
-            super("int_lit", pos);
+        public IntLit(long value, ParserRuleContext context) {
+            super("int_lit", context);
             this.value = value;
         }
 
@@ -53,8 +53,8 @@ public abstract class Tree {
     public static class BoolLit extends Node {
         public boolean value;
 
-        public BoolLit(boolean value, Position pos) {
-            super("bool_lit", pos);
+        public BoolLit(boolean value, ParserRuleContext context) {
+            super("bool_lit", context);
             this.value = value;
         }
 
@@ -75,8 +75,8 @@ public abstract class Tree {
     public static class StringLit extends Node {
         public String value;
 
-        public StringLit(String value, Position pos) {
-            super("string_lit", pos);
+        public StringLit(String value, ParserRuleContext context) {
+            super("string_lit", context);
             this.value = value;
         }
 
@@ -99,8 +99,8 @@ public abstract class Tree {
         public final Node left;
         public final Node right;
 
-        public Binary(Node left, Node right, String op, Position pos) {
-            super("binary", pos);
+        public Binary(Node left, Node right, String op, ParserRuleContext context) {
+            super("binary", context);
             this.op = op;
             this.left = left;
             this.right = right;
@@ -126,8 +126,8 @@ public abstract class Tree {
         public final String op;
         public final Node operand;
 
-        public Unary(String op, Node operand, Position pos) {
-            super("unary", pos);
+        public Unary(String op, Node operand, ParserRuleContext context) {
+            super("unary", context);
             this.op = op;
             this.operand = operand;
         }
@@ -150,8 +150,8 @@ public abstract class Tree {
     public static class Array extends Node {
         public final List<Node> elems;
 
-        public Array(List<Node> elems, Position pos) {
-            super("array", pos);
+        public Array(List<Node> elems, ParserRuleContext context) {
+            super("array", context);
             this.elems = elems;
         }
 
@@ -173,8 +173,8 @@ public abstract class Tree {
         public final String id;
         public final List<Node> params;
 
-        public Record(String id, List<Node> params, Position pos) {
-            super("record", pos);
+        public Record(String id, List<Node> params, ParserRuleContext context) {
+            super("record", context);
             this.id = id;
             this.params = params;
         }
@@ -197,8 +197,8 @@ public abstract class Tree {
     public static class Name extends Node {
         public final String id;
 
-        public Name(String id, Position pos) {
-            super("name", pos);
+        public Name(String id, ParserRuleContext context) {
+            super("name", context);
             this.id = id;
         }
 
@@ -220,8 +220,8 @@ public abstract class Tree {
         public final String id;
         public final List<Node> args;
 
-        public FuncCall(String id, List<Node> args, Position pos) {
-            super("call", pos);
+        public FuncCall(String id, List<Node> args, ParserRuleContext context) {
+            super("call", context);
             this.id = id;
             this.args = args;
         }
@@ -245,8 +245,8 @@ public abstract class Tree {
         public final Node location;
         public final String fieldName;
 
-        public FieldAccess(Node location, String fieldName, Position pos) {
-            super("field_access", pos);
+        public FieldAccess(Node location, String fieldName, ParserRuleContext context) {
+            super("field_access", context);
             this.location = location;
             this.fieldName = fieldName;
         }
@@ -270,8 +270,8 @@ public abstract class Tree {
         public final Node location;
         public final Node index;
 
-        public Index(Node location, Node index, Position pos) {
-            super("index", pos);
+        public Index(Node location, Node index, ParserRuleContext context) {
+            super("index", context);
             this.location = location;
             this.index = index;
         }
@@ -295,8 +295,8 @@ public abstract class Tree {
         public final Node lhs;
         public final Node rhs;
 
-        public Assign(Node lhs, Node rhs, Position pos) {
-            super("assign", pos);
+        public Assign(Node lhs, Node rhs, ParserRuleContext context) {
+            super("assign", context);
             this.lhs = lhs;
             this.rhs = rhs;
         }
@@ -321,8 +321,9 @@ public abstract class Tree {
         public final Node trueBranch;
         public final Optional<Node> falseBranch;
 
-        public If(Node cond, Node trueBranch, Optional<Node> falseBranch, Position pos) {
-            super("if", pos);
+        public If(Node cond, Node trueBranch, Optional<Node> falseBranch,
+                ParserRuleContext context) {
+            super("if", context);
             this.cond = cond;
             this.trueBranch = trueBranch;
             this.falseBranch = falseBranch;
@@ -347,8 +348,8 @@ public abstract class Tree {
     public static class Body extends Node {
         public final List<Node> Nodes;
 
-        public Body(List<Node> Nodes, Position pos) {
-            super("body", pos);
+        public Body(List<Node> Nodes, ParserRuleContext context) {
+            super("body", context);
             this.Nodes = Nodes;
         }
 
@@ -370,8 +371,8 @@ public abstract class Tree {
         public final Node cond;
         public final Node body;
 
-        public While(Node cond, Node body, Position pos) {
-            super("while", pos);
+        public While(Node cond, Node body, ParserRuleContext context) {
+            super("while", context);
             this.cond = cond;
             this.body = body;
         }
@@ -392,8 +393,8 @@ public abstract class Tree {
     }
 
     public static class Break extends Node {
-        public Break(Position pos) {
-            super("break", pos);
+        public Break(ParserRuleContext context) {
+            super("break", context);
         }
 
         @Override
@@ -411,8 +412,8 @@ public abstract class Tree {
         public final List<Node> decls;
         public final Node body;
 
-        public Let(List<Node> decls, Node body, Position pos) {
-            super("let", pos);
+        public Let(List<Node> decls, Node body, ParserRuleContext context) {
+            super("let", context);
             this.decls = decls;
             this.body = body;
         }
@@ -435,14 +436,14 @@ public abstract class Tree {
     public static abstract class TypeLit extends Node {
         public Type type;
 
-        public TypeLit(String displayName, Position pos) {
-            super(displayName, pos);
+        public TypeLit(String displayName, ParserRuleContext context) {
+            super(displayName, context);
         }
     }
 
     public static final class TInt extends TypeLit {
-        public TInt(Position pos) {
-            super("type_int", pos);
+        public TInt(ParserRuleContext context) {
+            super("type_int", context);
         }
 
         @Override
@@ -457,8 +458,8 @@ public abstract class Tree {
     }
 
     public static final class TBool extends TypeLit {
-        public TBool(Position pos) {
-            super("type_bool", pos);
+        public TBool(ParserRuleContext context) {
+            super("type_bool", context);
         }
 
         @Override
@@ -473,8 +474,8 @@ public abstract class Tree {
     }
 
     public static final class TString extends TypeLit {
-        public TString(Position pos) {
-            super("type_string", pos);
+        public TString(ParserRuleContext context) {
+            super("type_string", context);
         }
 
         @Override
@@ -555,16 +556,16 @@ public abstract class Tree {
         public final boolean immutable;
 
         public VarDecl(String id, Optional<Node> value, Optional<TypeLit> typeLit,
-                boolean immutable, Position pos) {
-            super("var_decl", pos);
+                boolean immutable, ParserRuleContext context) {
+            super("var_decl", context);
             this.id = id;
             this.value = value;
             this.typeLit = typeLit;
             this.immutable = immutable;
         }
 
-        public VarDecl(String id, Optional<TypeLit> typeLit, Position pos) {
-            super("var_decl", pos);
+        public VarDecl(String id, Optional<TypeLit> typeLit, ParserRuleContext context) {
+            super("var_decl", context);
             this.id = id;
             this.value = Optional.empty();
             this.typeLit = typeLit;
@@ -594,8 +595,8 @@ public abstract class Tree {
         public final Node body;
 
         public FuncDecl(String id, List<VarDecl> params, Optional<TypeLit> returnType, Node body,
-                Position pos) {
-            super("func_decl", pos);
+                ParserRuleContext context) {
+            super("func_decl", context);
             this.id = id;
             this.params = params;
             this.returnType = returnType;
@@ -625,8 +626,8 @@ public abstract class Tree {
         public Optional<TypeLit> returnType;
 
         public ExternDecl(String id, List<VarDecl> params, Optional<TypeLit> returnType,
-                Position pos) {
-            super("extern_decl", pos);
+                ParserRuleContext context) {
+            super("extern_decl", context);
             this.id = id;
             this.params = params;
             this.returnType = returnType;

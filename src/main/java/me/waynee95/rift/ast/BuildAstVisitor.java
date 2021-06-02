@@ -18,8 +18,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitIntLit(RiftParser.IntLitContext ctx) {
         try {
             long value = Long.parseLong(ctx.INT_LIT().getText());
-            var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-            return new Tree.IntLit(value, pos);
+            return new Tree.IntLit(value, ctx);
         } catch (NumberFormatException e) {
             throw new RuntimeException("Integer too big.");
         }
@@ -28,29 +27,25 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     @Override
     public Node visitBoolLit(RiftParser.BoolLitContext ctx) {
         boolean value = Boolean.parseBoolean(ctx.BOOL_LIT().getText());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.BoolLit(value, pos);
+        return new Tree.BoolLit(value, ctx);
     }
 
     @Override
     public Node visitStringLit(RiftParser.StringLitContext ctx) {
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.StringLit(ctx.STRING_LIT().getText(), pos);
+        return new Tree.StringLit(ctx.STRING_LIT().getText(), ctx);
     }
 
     @Override
     public Node visitUnary(RiftParser.UnaryContext ctx) {
         var operand = visit(ctx.expr());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Unary(ctx.op.getText(), operand, pos);
+        return new Tree.Unary(ctx.op.getText(), operand, ctx);
     }
 
     @Override
     public Node visitBinary(RiftParser.BinaryContext ctx) {
         var lhs = visit(ctx.left);
         var rhs = visit(ctx.right);
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Binary(lhs, rhs, ctx.op.getText(), pos);
+        return new Tree.Binary(lhs, rhs, ctx.op.getText(), ctx);
     }
 
     @Override
@@ -62,59 +57,52 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitArray(RiftParser.ArrayContext ctx) {
         List<Node> exprs = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            exprs.add(visit(expr));
+            exprs.add((Node) visit(expr));
         }
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Array(exprs, pos);
+        return new Tree.Array(exprs, ctx);
     }
 
     @Override
     public Node visitRecord(RiftParser.RecordContext ctx) {
         List<Node> params = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            params.add(visit(expr));
+            params.add((Node) visit(expr));
         }
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Record(ctx.TYPE_ID().getText(), params, pos);
+        return new Tree.Record(ctx.TYPE_ID().getText(), params, ctx);
     }
 
     @Override
     public Node visitName(RiftParser.NameContext ctx) {
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Name(ctx.ID().getText(), pos);
+        return new Tree.Name(ctx.ID().getText(), ctx);
     }
 
     @Override
     public Node visitFuncCall(RiftParser.FuncCallContext ctx) {
         List<Node> args = new ArrayList<>();
         for (RiftParser.ExprContext arg : ctx.expr()) {
-            args.add(visit(arg));
+            args.add((Node) visit(arg));
         }
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.FuncCall(ctx.ID().getText(), args, pos);
+        return new Tree.FuncCall(ctx.ID().getText(), args, ctx);
     }
 
     @Override
     public Node visitFieldAccess(RiftParser.FieldAccessContext ctx) {
         var location = visit(ctx.lvalue());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.FieldAccess(location, ctx.ID().getText(), pos);
+        return new Tree.FieldAccess(location, ctx.ID().getText(), ctx);
     }
 
     @Override
     public Node visitIndex(RiftParser.IndexContext ctx) {
         var location = visit(ctx.lvalue());
         var index = visit(ctx.expr());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Index(location, index, pos);
+        return new Tree.Index(location, index, ctx);
     }
 
     @Override
     public Node visitAssign(RiftParser.AssignContext ctx) {
         var lhs = visit(ctx.lvalue());
         var rhs = visit(ctx.expr());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Assign(lhs, rhs, pos);
+        return new Tree.Assign(lhs, rhs, ctx);
     }
 
     @Override
@@ -125,58 +113,52 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
         if (ctx.falseBranch != null) {
             falseBranch = visit(ctx.falseBranch);
         }
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.If(cond, trueBranch, Optional.ofNullable(falseBranch), pos);
+        return new Tree.If(cond, trueBranch, Optional.ofNullable(falseBranch), ctx);
     }
 
     @Override
     public Node visitExprs(RiftParser.ExprsContext ctx) {
         List<Node> exprs = new ArrayList<>();
-        for (RiftParser.ExprContext expr : ctx.expr()) {
-            exprs.add(visit(expr));
-        }
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Body(exprs, pos);
+        // for (RiftParser.ExprContext expr : ctx.expr()) {
+        // exprs.add((Node) visit(expr));
+        // }
+        return new Tree.Body(exprs, ctx);
     }
 
     @Override
     public Node visitWhile(RiftParser.WhileContext ctx) {
         var cond = visit(ctx.cond);
         var body = visit(ctx.exprs());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.While(cond, body, pos);
+        return new Tree.While(cond, body, ctx);
     }
 
     @Override
     public Node visitBreak(RiftParser.BreakContext ctx) {
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Break(pos);
+        return new Tree.Break(ctx);
     }
 
     @Override
     public Node visitLet(RiftParser.LetContext ctx) {
         List<Node> decls = new ArrayList<>();
         for (RiftParser.DeclContext decl : ctx.decl()) {
-            decls.add(visit(decl));
+            decls.add((Node) visit(decl));
         }
         var body = visit(ctx.exprs());
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        return new Tree.Let(decls, body, pos);
+        return new Tree.Let(decls, body, ctx);
     }
 
     @Override
     public Node visitType(RiftParser.TypeContext ctx) {
-        var pos = new Position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
         if (ctx.INT() != null) {
-            return new Tree.TInt(pos);
+            return new Tree.TInt(ctx);
         } else if (ctx.BOOL() != null) {
-            return new Tree.TBool(pos);
+            return new Tree.TBool(ctx);
         } else if (ctx.STRING() != null) {
-            return new Tree.TString(pos);
+            return new Tree.TString(ctx);
         } else if (ctx.TYPE_ID() != null) {
-            return new Tree.TCustom(pos);
+            return new Tree.TCustom(ctx.TYPE_ID().getText(), ctx);
         } else {
-            return new Tree.TArray((Tree.TypeLit) visit(ctx.type()), pos);
+            return new Tree.TArray((Tree.TypeLit) visit(ctx.type()), ctx);
         }
     }
 

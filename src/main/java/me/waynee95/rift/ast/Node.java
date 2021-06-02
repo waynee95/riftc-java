@@ -1,14 +1,16 @@
 package me.waynee95.rift.ast;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import java.util.Iterator;
 
 public abstract class Node implements Iterable<Object> {
+    public final ParserRuleContext context;
     public final String displayName;
-    public final Position pos;
 
-    public Node(String displayName, Position pos) {
+    public Node(String displayName, ParserRuleContext context) {
         this.displayName = displayName;
-        this.pos = pos;
+        this.context = context;
     }
 
     public abstract Object getChild(int index);
