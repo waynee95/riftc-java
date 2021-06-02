@@ -59,7 +59,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitArray(RiftParser.ArrayContext ctx) {
         List<Node> exprs = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            exprs.add((Node) visit(expr));
+            exprs.add(visit(expr));
         }
         return new Tree.Array(exprs, ctx);
     }
@@ -68,7 +68,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitRecord(RiftParser.RecordContext ctx) {
         List<Node> params = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            params.add((Node) visit(expr));
+            params.add(visit(expr));
         }
         return new Tree.Record(ctx.TYPE_ID().getText(), params, ctx);
     }
@@ -91,7 +91,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitFuncCall(RiftParser.FuncCallContext ctx) {
         List<Node> args = new ArrayList<>();
         for (RiftParser.ExprContext arg : ctx.expr()) {
-            args.add((Node) visit(arg));
+            args.add(visit(arg));
         }
         return new Tree.FuncCall(ctx.ID().getText(), args, ctx);
     }
@@ -120,10 +120,12 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitIf(RiftParser.IfContext ctx) {
         var cond = visit(ctx.cond);
         var trueBranch = visit(ctx.trueBranch);
+
         Node falseBranch = null;
         if (ctx.falseBranch != null) {
             falseBranch = visit(ctx.falseBranch);
         }
+
         return new Tree.If(cond, trueBranch, Optional.ofNullable(falseBranch), ctx);
     }
 
@@ -131,7 +133,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitExprs(RiftParser.ExprsContext ctx) {
         List<Node> exprs = new ArrayList<>();
         for (RiftParser.ExprContext expr : ctx.expr()) {
-            exprs.add((Node) visit(expr));
+            exprs.add(visit(expr));
         }
         return new Tree.Body(exprs, ctx);
     }
@@ -178,6 +180,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
         Tree.TypeLit type = ctx.type() != null ? (Tree.TypeLit) visit(ctx.type()) : null;
         var immutable = ctx.VAL() != null ? true : false;
         var value = visit(ctx.expr());
+
         return new Tree.VarDecl(ctx.ID().getText(), Optional.of(value), Optional.ofNullable(type),
                 immutable, ctx);
     }
@@ -185,51 +188,59 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     @Override
     public Node visitFuncDecl(RiftParser.FuncDeclContext ctx) {
         List<Tree.VarDecl> params = new ArrayList<>();
-        Tree.TypeLit returnType = null;
         var id = ctx.ID().getText();
         var body = visit(ctx.exprs());
+
+        Tree.TypeLit returnType = null;
         if (ctx.type() != null) {
             returnType = (Tree.TypeLit) visit(ctx.type());
         }
+
         for (int i = 0; i < ctx.typefields().ID().size(); i++) {
             var param = ctx.typefields().ID(i).getText();
             Tree.TypeLit type = (Tree.TypeLit) visit(ctx.typefields().type(i));
             params.add(new Tree.VarDecl(param, Optional.of(type), ctx));
         }
+
         return new Tree.FuncDecl(id, params, Optional.ofNullable(returnType), body, ctx);
     }
 
     @Override
     public Node visitExternDecl(RiftParser.ExternDeclContext ctx) {
         List<Tree.VarDecl> params = new ArrayList<>();
-        Tree.TypeLit returnType = null;
         var id = ctx.ID().getText();
+
+        Tree.TypeLit returnType = null;
         if (ctx.type() != null) {
             returnType = (Tree.TypeLit) visit(ctx.type());
         }
+
         for (int i = 0; i < ctx.typefields().ID().size(); i++) {
             var param = ctx.typefields().ID(i).getText();
             Tree.TypeLit type = (Tree.TypeLit) visit(ctx.typefields().type(i));
             params.add(new Tree.VarDecl(param, Optional.of(type), ctx));
         }
+
         return new Tree.ExternDecl(id, params, Optional.ofNullable(returnType), ctx);
     }
 
     @Override
     public Node visitTypeDecl(RiftParser.TypeDeclContext ctx) {
         var id = ctx.TYPE_ID().getText();
-        // Record
+
         if (ctx.typedec().LCURLY() != null) {
             List<Pair<String, Tree.TypeLit>> fields = new ArrayList<>();
+
             for (int i = 0; i < ctx.typedec().typefields().ID().size(); i++) {
                 var param = ctx.typedec().typefields().ID(i).getText();
                 Tree.TypeLit type = (Tree.TypeLit) visit(ctx.typedec().typefields().type(i));
                 fields.add(new Pair<>(param, type));
             }
+
             return new Tree.RecordTypeDecl(id, fields, ctx);
         } else {
-            // Enum
             List<Pair<String, List<Tree.TypeLit>>> constructors = new ArrayList<>();
+
             for (RiftParser.ConstructorContext constructor : ctx.typedec().constructor()) {
                 List<Tree.TypeLit> types = new ArrayList<>();
                 for (RiftParser.TypeContext type : constructor.type()) {
@@ -237,6 +248,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
                 }
                 constructors.add(new Pair<>(constructor.TYPE_ID().getText(), types));
             }
+
             return new Tree.EnumTypeDecl(id, constructors, ctx);
         }
     }
@@ -250,11 +262,13 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitConstructorPattern(RiftParser.ConstructorPatternContext ctx) {
         List<Pattern> fields = new ArrayList<>();
         var id = ctx.TYPE_ID().getText();
+
         if (ctx.LPAREN() != null) {
             for (RiftParser.PatternContext pattern : ctx.pattern()) {
                 fields.add((Pattern) visit(pattern));
             }
         }
+
         return new ConstructorPattern(id, fields, ctx);
     }
 
@@ -289,6 +303,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
             var body = visit(ctx.exprs());
             cases.add(new MatchCase(new WildCard(ctx), body, ctx));
         }
+
         return new Tree.Match(expr, cases, ctx);
     }
 }
