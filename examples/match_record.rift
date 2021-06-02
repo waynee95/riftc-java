@@ -1,0 +1,8 @@
+let
+  type Person = { name: string, age: i64 }
+
+  fn test1(p: Person): string =
+    match p with
+      | { name, age } => name
+in
+end

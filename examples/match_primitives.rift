@@ -1,0 +1,19 @@
+let
+  fn test1(x: i64): string =
+    match x with
+      | 0 => "zero"
+      | 1 => "one"
+      | 3 => "two"
+      | else => "something else"
+
+  fn test2(b: bool): i64 =
+    match b with
+      | true  => 1
+      | false => 0
+
+  fn test3(s: string): bool =
+    match s with
+      | "hello world" => true
+      | else => false
+in
+end

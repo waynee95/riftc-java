@@ -1,0 +1,17 @@
+let
+  type Fruit = Apple | Banana | Cherry
+
+  fn test1(x: Fruit): string =
+    match x with
+      | Fruit => "fruit"
+      | Banana => "banana"
+      | Cherry => "cherry"
+
+  type List = Nil | List(i64, List)
+
+  fn test2(l: List): i64 =
+    match l with
+      | Empty => 0
+      | List(x, xs) => 1 + length(xs)
+in
+end
