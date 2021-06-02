@@ -98,11 +98,11 @@ public abstract class Tree {
     }
 
     public static class Binary extends Node {
-        public final String op;
+        public final Operator.Op op;
         public final Node left;
         public final Node right;
 
-        public Binary(Node left, Node right, String op, ParserRuleContext context) {
+        public Binary(Node left, Node right, Operator.Op op, ParserRuleContext context) {
             super("binary", context);
             this.op = op;
             this.left = left;
@@ -126,10 +126,10 @@ public abstract class Tree {
     }
 
     public static class Unary extends Node {
-        public final String op;
+        public final Operator.Op op;
         public final Node operand;
 
-        public Unary(String op, Node operand, ParserRuleContext context) {
+        public Unary(Operator.Op op, Node operand, ParserRuleContext context) {
             super("unary", context);
             this.op = op;
             this.operand = operand;

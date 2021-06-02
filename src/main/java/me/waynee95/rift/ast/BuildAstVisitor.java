@@ -40,14 +40,16 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     @Override
     public Node visitUnary(RiftParser.UnaryContext ctx) {
         var operand = visit(ctx.expr());
-        return new Tree.Unary(ctx.op.getText(), operand, ctx);
+        var op = Operator.fromString(ctx.op.getText());
+        return new Tree.Unary(op, operand, ctx);
     }
 
     @Override
     public Node visitBinary(RiftParser.BinaryContext ctx) {
         var lhs = visit(ctx.left);
         var rhs = visit(ctx.right);
-        return new Tree.Binary(lhs, rhs, ctx.op.getText(), ctx);
+        var op = Operator.fromString(ctx.op.getText());
+        return new Tree.Binary(lhs, rhs, op, ctx);
     }
 
     @Override
@@ -271,7 +273,6 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
         return new ConstructorPattern(id, fields, ctx);
     }
-
 
     @Override
     public Node visitRecordPattern(RiftParser.RecordPatternContext ctx) {
