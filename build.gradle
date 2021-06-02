@@ -41,6 +41,7 @@ spotless {
     java {
         targetExclude("build/generated-src/**/*.java")
         eclipse().configFile(rootProject.file("config/spotless/formatter-settings.xml"))
+        removeUnusedImports()
     }
 }
 
