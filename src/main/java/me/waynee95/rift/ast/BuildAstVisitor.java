@@ -270,7 +270,8 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitVariablePattern(RiftParser.VariablePatternContext ctx) {
-        return new VariablePattern(ctx.ID().getText(), ctx);
+        return new VariablePattern(new Tree.VarDecl(ctx.ID().getText(), Optional.empty(), ctx),
+                ctx);
     }
 
     @Override

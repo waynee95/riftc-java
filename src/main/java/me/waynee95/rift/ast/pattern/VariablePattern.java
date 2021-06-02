@@ -1,11 +1,12 @@
 package me.waynee95.rift.ast.pattern;
 
+import me.waynee95.rift.ast.Tree;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class VariablePattern extends Pattern {
-    public final String id;
+    public final Tree.VarDecl id;
 
-    public VariablePattern(String id, ParserRuleContext context) {
+    public VariablePattern(Tree.VarDecl id, ParserRuleContext context) {
         super("var_pattern", context);
         this.id = id;
     }
