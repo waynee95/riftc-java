@@ -42,20 +42,12 @@ expr
    | 'while' cond=expr 'do' exprs #While
    | 'break' #Break
    | 'let' (decl (decl)*)? 'in' exprs 'end' #Let
-   | 'match' expr 'with' '|' pattern '=>' exprs (',' pattern '=>' exprs)* ('else' '=>' exprs)? #Match
+   | 'match' expr 'with' matchcases ('else' '=>' exprs)? #Match
    ;
 
-literal
-   : INT_LIT #IntLit
-   | STRING_LIT #StringLit
-   | BOOL_LIT #BoolLit
-   ;
-
-pattern
-   : literal
-   | TYPE_ID
-   | TYPE_ID ('(' pattern ')')?
-   ;
+exprs
+    : (expr (',' expr)*)?
+    ;
 
 lvalue
    : ID #Name
@@ -63,8 +55,14 @@ lvalue
    | lvalue '[' expr ']' #Index
    ;
 
-exprs
-   : (expr (';' expr)*)?
+matchcases
+    : ('|' pattern '=>' exprs)+
+    ;
+
+pattern
+   : literal
+   | ID
+   | TYPE_ID '(' pattern ')'
    ;
 
 decl
@@ -87,8 +85,13 @@ typedec
    : '{' typefields '}'
 
    // Enum Type
-   | TYPE_ID ('(' type (',' type)* ')')? ('|' TYPE_ID ('(' type (',' type)* ')')?)*
+   | constructor ('|' constructor)*
    ;
+
+constructor
+    : TYPE_ID
+    | TYPE_ID '(' (type (',' type)*)? ')'
+    ;
 
 type
    // Builtin Types
@@ -110,3 +113,8 @@ typefields
    : (ID ':' type (',' ID ':' type)*)?
    ;
 
+literal
+   : INT_LIT #IntLit
+   | STRING_LIT #StringLit
+   | BOOL_LIT #BoolLit
+   ;
