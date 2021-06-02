@@ -1,0 +1,10 @@
+let
+  fn f(x: i64): string =
+    match x with
+      | 0 => "zero"
+      | 1 => "one"
+      | 2 => "two"
+      | else => "something else"
+in
+  print(f(42))
+end
