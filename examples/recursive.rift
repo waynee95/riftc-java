@@ -2,20 +2,11 @@ let
   type Node = { value: i64, rest: List }
   type List = Link(Node) | Empty
 
-  val l1 = Link(Node {
-              value: 1,
-              rest: Link(Node {
-                value: 2,
-                rest: Link(Node {
-                  value: 3,
-                  rest: Empty
-                })
-              })
-            })
+  val l1 = List(Node {1, List(Node { 2, List(Node { 3, Empty })})})
 
   fn print_linked_list(l: List) =
     match l with
-      | Link({ val, rest }) => print_int(val); print_linked_list(rest)
+      | Link({ x, rest }) => print_int(x); print_linked_list(rest)
       | Empty => print("_")
 in
   print_linked_list(l1)
