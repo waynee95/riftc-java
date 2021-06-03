@@ -1,13 +1,14 @@
 package me.waynee95.rift.ast.pattern;
 
+import me.waynee95.rift.ast.Tree;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
 
 public class RecordPattern extends Pattern {
-    public final List<String> fields;
+    public final List<Tree.VarDecl> fields;
 
-    public RecordPattern(List<String> fields, ParserRuleContext context) {
+    public RecordPattern(List<Tree.VarDecl> fields, ParserRuleContext context) {
         super("record_pattern", context);
         this.fields = fields;
     }

@@ -276,9 +276,9 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitRecordPattern(RiftParser.RecordPatternContext ctx) {
-        List<String> fields = new ArrayList<>();
+        List<Tree.VarDecl> fields = new ArrayList<>();
         for (TerminalNode fieldName : ctx.ID()) {
-            fields.add(fieldName.getText());
+            fields.add(new Tree.VarDecl(fieldName.getText(), Optional.empty(), ctx));
         }
         return new RecordPattern(fields, ctx);
     }
