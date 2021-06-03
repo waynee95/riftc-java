@@ -5,10 +5,7 @@ import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.error.ParseExceptionListener;
 import me.waynee95.rift.parse.RiftLexer;
 import me.waynee95.rift.parse.RiftParser;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -37,6 +34,7 @@ class Main implements Runnable {
     @Option(names = "--print-ast", description = "Print the AST of the input file.")
     boolean printAst = false;
 
+    // TODO: --scopes dumps symbol table for each scope
     // TODO: --typecheck to run the type checker on the input file
 
     public static void main(String[] args) {
@@ -52,14 +50,19 @@ class Main implements Runnable {
 
         try {
             if (!Files.exists(Path.of(filePath))) {
-                System.err.println("error: " + filePath + " does not exist.");
-                System.exit(-1);
+                onError("file " + filePath + " does not exist.");
+            }
+
+            if (!filePath.endsWith(".rift") || Files.isDirectory(Path.of(filePath))) {
+                onError(filePath + " is not a valid input file");
             }
 
             CharStream input = CharStreams.fromFileName(filePath);
 
+            // TODO: Throw error on unkown symbol
+            RiftLexer lexer = new RiftLexer(input);
+
             if (lexTrace) {
-                RiftLexer lexer = new RiftLexer(input);
                 Token token = lexer.nextToken();
                 printToken(token);
                 while (token.getType() != Token.EOF) {
@@ -68,7 +71,7 @@ class Main implements Runnable {
                 }
             }
 
-            RiftParser parser = new RiftParser(new CommonTokenStream(new RiftLexer(input)));
+            RiftParser parser = new RiftParser(new CommonTokenStream(lexer));
             parser.removeErrorListeners();
             parser.addErrorListener(new ParseExceptionListener());
 
@@ -80,12 +83,10 @@ class Main implements Runnable {
                     System.out.println(ast);
                 }
             } catch (ParseCancellationException e) {
-                System.err.println("error: " + e.getMessage());
-                System.err.println("\nRejected.");
-                System.exit(-1);
+                onError(e.getMessage());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            onError(e.getMessage());
         }
 
         System.out.println("\nAccepted.");
@@ -95,5 +96,11 @@ class Main implements Runnable {
     private static void printToken(Token token) {
         System.out.println(
                 token.getLine() + ":" + token.getCharPositionInLine() + " " + token.getText());
+    }
+
+    private static void onError(String msg) {
+        System.err.println("error: " + msg);
+        System.err.println("\nRejected.");
+        System.exit(-1);
     }
 }
