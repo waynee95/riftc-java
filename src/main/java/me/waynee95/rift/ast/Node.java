@@ -25,6 +25,8 @@ public abstract class Node implements Iterable<Object> {
 
     public abstract int childCount();
 
+    public abstract <C> void accept(Visitor<C> v, C ctx);
+
     @Override
     public Iterator<Object> iterator() {
         return new Iterator<>() {

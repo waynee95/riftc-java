@@ -10,17 +10,17 @@ import java.util.Optional;
 
 public abstract class Tree {
     public static class Program extends Node {
-        public final Node Node;
+        public final Node expr;
 
-        public Program(Node Node, ParserRuleContext context) {
-            super("prog", context);
-            this.Node = Node;
+        public Program(Node expr, ParserRuleContext ctx) {
+            super("prog", ctx);
+            this.expr = expr;
         }
 
         @Override
         public Object getChild(int index) {
             return switch (index) {
-                case 0 -> Node;
+                case 0 -> expr;
                 default -> throw new IndexOutOfBoundsException();
             };
         }
@@ -29,13 +29,18 @@ public abstract class Tree {
         public int childCount() {
             return 1;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
-    public static class IntLit extends Node {
-        public long value;
+    public abstract static class Literal<T> extends Node {
+        public final T value;
 
-        public IntLit(long value, ParserRuleContext context) {
-            super("int_lit", context);
+        public Literal(String displayName, T value, ParserRuleContext ctx) {
+            super(displayName, ctx);
             this.value = value;
         }
 
@@ -43,57 +48,39 @@ public abstract class Tree {
         public Object getChild(int index) {
             return switch (index) {
                 case 0 -> value;
-                default -> new IndexOutOfBoundsException();
+                default -> throw new IndexOutOfBoundsException();
             };
         }
 
         @Override
         public int childCount() {
             return 1;
+        }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
         }
     }
 
-    public static class BoolLit extends Node {
-        public boolean value;
+    public static class IntLit extends Literal<Long> {
 
-        public BoolLit(boolean value, ParserRuleContext context) {
-            super("bool_lit", context);
-            this.value = value;
-        }
-
-        @Override
-        public Object getChild(int index) {
-            return switch (index) {
-                case 0 -> value;
-                default -> new IndexOutOfBoundsException();
-            };
-        }
-
-        @Override
-        public int childCount() {
-            return 1;
+        public IntLit(long value, ParserRuleContext ctx) {
+            super("int_lit", value, ctx);
         }
     }
 
-    public static class StringLit extends Node {
-        public String value;
+    public static class BoolLit extends Literal<Boolean> {
 
-        public StringLit(String value, ParserRuleContext context) {
-            super("string_lit", context);
-            this.value = value;
+        public BoolLit(Boolean value, ParserRuleContext ctx) {
+            super("bool_lit", value, ctx);
         }
+    }
 
-        @Override
-        public Object getChild(int index) {
-            return switch (index) {
-                case 0 -> value;
-                default -> new IndexOutOfBoundsException();
-            };
-        }
+    public static class StringLit extends Literal<String> {
 
-        @Override
-        public int childCount() {
-            return 1;
+        public StringLit(String value, ParserRuleContext ctx) {
+            super("string_lit", value, ctx);
         }
     }
 
@@ -102,8 +89,8 @@ public abstract class Tree {
         public final Node left;
         public final Node right;
 
-        public Binary(Node left, Node right, Operator.Op op, ParserRuleContext context) {
-            super("binary", context);
+        public Binary(Node left, Node right, Operator.Op op, ParserRuleContext ctx) {
+            super("binary", ctx);
             this.op = op;
             this.left = left;
             this.right = right;
@@ -123,14 +110,19 @@ public abstract class Tree {
         public int childCount() {
             return 3;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Unary extends Node {
         public final Operator.Op op;
         public final Node operand;
 
-        public Unary(Operator.Op op, Node operand, ParserRuleContext context) {
-            super("unary", context);
+        public Unary(Operator.Op op, Node operand, ParserRuleContext ctx) {
+            super("unary", ctx);
             this.op = op;
             this.operand = operand;
         }
@@ -148,13 +140,18 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Array extends Node {
         public final List<Node> elems;
 
-        public Array(List<Node> elems, ParserRuleContext context) {
-            super("array", context);
+        public Array(List<Node> elems, ParserRuleContext ctx) {
+            super("array", ctx);
             this.elems = elems;
         }
 
@@ -170,14 +167,19 @@ public abstract class Tree {
         public int childCount() {
             return 1;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Record extends Node {
         public final String id;
         public final List<Node> params;
 
-        public Record(String id, List<Node> params, ParserRuleContext context) {
-            super("record", context);
+        public Record(String id, List<Node> params, ParserRuleContext ctx) {
+            super("record", ctx);
             this.id = id;
             this.params = params;
         }
@@ -194,6 +196,11 @@ public abstract class Tree {
         @Override
         public int childCount() {
             return 2;
+        }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
         }
     }
 
@@ -202,8 +209,8 @@ public abstract class Tree {
         public final List<Node> params;
 
 
-        public Constructor(String id, List<Node> params, ParserRuleContext context) {
-            super("constructor", context);
+        public Constructor(String id, List<Node> params, ParserRuleContext ctx) {
+            super("constructor", ctx);
             this.id = id;
             this.params = params;
         }
@@ -221,13 +228,19 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Name extends Node {
         public final String id;
+        public Optional<VarDecl> decl = Optional.empty();
 
-        public Name(String id, ParserRuleContext context) {
-            super("name", context);
+        public Name(String id, ParserRuleContext ctx) {
+            super("name", ctx);
             this.id = id;
         }
 
@@ -243,14 +256,19 @@ public abstract class Tree {
         public int childCount() {
             return 1;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class FuncCall extends Node {
         public final String id;
         public final List<Node> args;
 
-        public FuncCall(String id, List<Node> args, ParserRuleContext context) {
-            super("call", context);
+        public FuncCall(String id, List<Node> args, ParserRuleContext ctx) {
+            super("call", ctx);
             this.id = id;
             this.args = args;
         }
@@ -268,14 +286,20 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class FieldAccess extends Node {
         public final Node location;
         public final String fieldName;
+        public Optional<Tree.RecordTypeDecl> decl = Optional.empty();
 
-        public FieldAccess(Node location, String fieldName, ParserRuleContext context) {
-            super("field_access", context);
+        public FieldAccess(Node location, String fieldName, ParserRuleContext ctx) {
+            super("field_access", ctx);
             this.location = location;
             this.fieldName = fieldName;
         }
@@ -293,14 +317,20 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Index extends Node {
         public final Node location;
         public final Node index;
+        public Optional<Tree.VarDecl> decl = Optional.empty();
 
-        public Index(Node location, Node index, ParserRuleContext context) {
-            super("index", context);
+        public Index(Node location, Node index, ParserRuleContext ctx) {
+            super("index", ctx);
             this.location = location;
             this.index = index;
         }
@@ -318,14 +348,19 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Assign extends Node {
         public final Node lhs;
         public final Node rhs;
 
-        public Assign(Node lhs, Node rhs, ParserRuleContext context) {
-            super("assign", context);
+        public Assign(Node lhs, Node rhs, ParserRuleContext ctx) {
+            super("assign", ctx);
             this.lhs = lhs;
             this.rhs = rhs;
         }
@@ -343,6 +378,11 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class If extends Node {
@@ -350,9 +390,8 @@ public abstract class Tree {
         public final Node trueBranch;
         public final Optional<Node> falseBranch;
 
-        public If(Node cond, Node trueBranch, Optional<Node> falseBranch,
-                ParserRuleContext context) {
-            super("if", context);
+        public If(Node cond, Node trueBranch, Optional<Node> falseBranch, ParserRuleContext ctx) {
+            super("if", ctx);
             this.cond = cond;
             this.trueBranch = trueBranch;
             this.falseBranch = falseBranch;
@@ -372,20 +411,25 @@ public abstract class Tree {
         public int childCount() {
             return 3;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Body extends Node {
-        public final List<Node> Nodes;
+        public final List<Node> nodes;
 
-        public Body(List<Node> Nodes, ParserRuleContext context) {
-            super("body", context);
-            this.Nodes = Nodes;
+        public Body(List<Node> Nodes, ParserRuleContext ctx) {
+            super("body", ctx);
+            this.nodes = Nodes;
         }
 
         @Override
         public Object getChild(int index) {
             return switch (index) {
-                case 0 -> Nodes;
+                case 0 -> nodes;
                 default -> throw new IndexOutOfBoundsException();
             };
         }
@@ -394,14 +438,19 @@ public abstract class Tree {
         public int childCount() {
             return 1;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class While extends Node {
         public final Node cond;
         public final Node body;
 
-        public While(Node cond, Node body, ParserRuleContext context) {
-            super("while", context);
+        public While(Node cond, Node body, ParserRuleContext ctx) {
+            super("while", ctx);
             this.cond = cond;
             this.body = body;
         }
@@ -419,11 +468,16 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Break extends Node {
-        public Break(ParserRuleContext context) {
-            super("break", context);
+        public Break(ParserRuleContext ctx) {
+            super("break", ctx);
         }
 
         @Override
@@ -435,14 +489,19 @@ public abstract class Tree {
         public int childCount() {
             return 0;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Let extends Node {
         public final List<Node> decls;
         public final Node body;
 
-        public Let(List<Node> decls, Node body, ParserRuleContext context) {
-            super("let", context);
+        public Let(List<Node> decls, Node body, ParserRuleContext ctx) {
+            super("let", ctx);
             this.decls = decls;
             this.body = body;
         }
@@ -460,19 +519,24 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static abstract class TypeLit extends Node {
         public Type type;
 
-        public TypeLit(String displayName, ParserRuleContext context) {
-            super(displayName, context);
+        public TypeLit(String displayName, ParserRuleContext ctx) {
+            super(displayName, ctx);
         }
     }
 
     public static final class TInt extends TypeLit {
-        public TInt(ParserRuleContext context) {
-            super("type_int", context);
+        public TInt(ParserRuleContext ctx) {
+            super("type_int", ctx);
         }
 
         @Override
@@ -483,12 +547,17 @@ public abstract class Tree {
         @Override
         public int childCount() {
             return 0;
+        }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
         }
     }
 
     public static final class TBool extends TypeLit {
-        public TBool(ParserRuleContext context) {
-            super("type_bool", context);
+        public TBool(ParserRuleContext ctx) {
+            super("type_bool", ctx);
         }
 
         @Override
@@ -499,12 +568,17 @@ public abstract class Tree {
         @Override
         public int childCount() {
             return 0;
+        }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
         }
     }
 
     public static final class TString extends TypeLit {
-        public TString(ParserRuleContext context) {
-            super("type_string", context);
+        public TString(ParserRuleContext ctx) {
+            super("type_string", ctx);
         }
 
         @Override
@@ -515,14 +589,20 @@ public abstract class Tree {
         @Override
         public int childCount() {
             return 0;
+        }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
         }
     }
 
     public static final class TCustom extends TypeLit {
         public final String id;
+        public Optional<Decl> decl = Optional.empty();
 
-        public TCustom(String id, ParserRuleContext context) {
-            super("type_custom", context);
+        public TCustom(String id, ParserRuleContext ctx) {
+            super("type_custom", ctx);
             this.id = id;
         }
 
@@ -538,13 +618,18 @@ public abstract class Tree {
         public int childCount() {
             return 1;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static final class TArray extends TypeLit {
         public final TypeLit elemType;
 
-        public TArray(TypeLit elemType, ParserRuleContext context) {
-            super("type_array", context);
+        public TArray(TypeLit elemType, ParserRuleContext ctx) {
+            super("type_array", ctx);
             this.elemType = elemType;
         }
 
@@ -560,17 +645,29 @@ public abstract class Tree {
         public int childCount() {
             return 1;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
-    public static class RecordTypeDecl extends Node {
+    public abstract static class Decl extends Node {
         public final String id;
+        public Optional<Type> type = Optional.empty();
+
+        public Decl(String id, String displayName, ParserRuleContext ctx) {
+            super(displayName, ctx);
+            this.id = id;
+        }
+    }
+
+    public static class RecordTypeDecl extends Decl {
         public final List<Pair<String, TypeLit>> fields;
-        public Type type;
 
         public RecordTypeDecl(String id, List<Pair<String, TypeLit>> fields,
-                ParserRuleContext context) {
-            super("record_type_decl", context);
-            this.id = id;
+                ParserRuleContext ctx) {
+            super(id, "record_type_decl", ctx);
             this.fields = fields;
         }
 
@@ -587,16 +684,19 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
-    public static class EnumTypeDecl extends Node {
-        public final String id;
+    public static class EnumTypeDecl extends Decl {
         public final List<Pair<String, List<TypeLit>>> constructors;
 
         public EnumTypeDecl(String id, List<Pair<String, List<TypeLit>>> constructors,
-                ParserRuleContext context) {
-            super("enum_type_decl", context);
-            this.id = id;
+                ParserRuleContext ctx) {
+            super(id, "enum_type_decl", ctx);
             this.constructors = constructors;
         }
 
@@ -613,26 +713,28 @@ public abstract class Tree {
         public int childCount() {
             return 2;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
-    public static class VarDecl extends Node {
-        public final String id;
+    public static class VarDecl extends Decl {
         public final Optional<Node> value;
         public final Optional<TypeLit> typeLit;
         public final boolean immutable;
 
         public VarDecl(String id, Optional<Node> value, Optional<TypeLit> typeLit,
-                boolean immutable, ParserRuleContext context) {
-            super("var_decl", context);
-            this.id = id;
+                boolean immutable, ParserRuleContext ctx) {
+            super(id, "var_decl", ctx);
             this.value = value;
             this.typeLit = typeLit;
             this.immutable = immutable;
         }
 
-        public VarDecl(String id, Optional<TypeLit> typeLit, ParserRuleContext context) {
-            super("var_decl", context);
-            this.id = id;
+        public VarDecl(String id, Optional<TypeLit> typeLit, ParserRuleContext ctx) {
+            super(id, "var_decl", ctx);
             this.value = Optional.empty();
             this.typeLit = typeLit;
             this.immutable = false;
@@ -652,18 +754,21 @@ public abstract class Tree {
         public int childCount() {
             return 3;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
-    public static class FuncDecl extends Node {
-        public final String id;
+    public static class FuncDecl extends Decl {
         public final List<VarDecl> params;
         public final Optional<TypeLit> returnType;
         public final Node body;
 
         public FuncDecl(String id, List<VarDecl> params, Optional<TypeLit> returnType, Node body,
-                ParserRuleContext context) {
-            super("func_decl", context);
-            this.id = id;
+                ParserRuleContext ctx) {
+            super(id, "func_decl", ctx);
             this.params = params;
             this.returnType = returnType;
             this.body = body;
@@ -684,17 +789,20 @@ public abstract class Tree {
         public int childCount() {
             return 4;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
-    public static class ExternDecl extends Node {
-        public final String id;
+    public static class ExternDecl extends Decl {
         public List<VarDecl> params;
         public Optional<TypeLit> returnType;
 
         public ExternDecl(String id, List<VarDecl> params, Optional<TypeLit> returnType,
-                ParserRuleContext context) {
-            super("extern_decl", context);
-            this.id = id;
+                ParserRuleContext ctx) {
+            super(id, "extern_decl", ctx);
             this.params = params;
             this.returnType = returnType;
         }
@@ -713,14 +821,19 @@ public abstract class Tree {
         public int childCount() {
             return 3;
         }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
+        }
     }
 
     public static class Match extends Node {
         public final Node expr;
         public final List<MatchCase> cases;
 
-        public Match(Node expr, List<MatchCase> cases, ParserRuleContext context) {
-            super("match", context);
+        public Match(Node expr, List<MatchCase> cases, ParserRuleContext ctx) {
+            super("match", ctx);
             this.expr = expr;
             this.cases = cases;
         }
@@ -737,6 +850,11 @@ public abstract class Tree {
         @Override
         public int childCount() {
             return 2;
+        }
+
+        @Override
+        public <C> void accept(Visitor<C> v, C ctx) {
+            v.visit(this, ctx);
         }
     }
 }

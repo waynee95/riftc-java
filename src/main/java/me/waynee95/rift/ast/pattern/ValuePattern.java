@@ -1,6 +1,7 @@
 package me.waynee95.rift.ast.pattern;
 
 import me.waynee95.rift.ast.Node;
+import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ValuePattern extends Pattern {
@@ -22,5 +23,10 @@ public class ValuePattern extends Pattern {
     @Override
     public int childCount() {
         return 1;
+    }
+
+    @Override
+    public <C> void accept(Visitor<C> v, C ctx) {
+        v.visit(this, ctx);
     }
 }
