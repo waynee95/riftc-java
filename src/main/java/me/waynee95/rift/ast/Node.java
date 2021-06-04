@@ -5,12 +5,20 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.Iterator;
 
 public abstract class Node implements Iterable<Object> {
-    public final ParserRuleContext context;
+    public final ParserRuleContext ctx;
     public final String displayName;
 
-    public Node(String displayName, ParserRuleContext context) {
+    public Node(String displayName, ParserRuleContext ctx) {
         this.displayName = displayName;
-        this.context = context;
+        this.ctx = ctx;
+    }
+
+    public int getLine() {
+        return ctx.getStart().getLine();
+    }
+
+    public int getCol() {
+        return ctx.getStop().getCharPositionInLine();
     }
 
     public abstract Object getChild(int index);

@@ -1,6 +1,7 @@
 package me.waynee95.rift.ast;
 
 import me.waynee95.rift.ast.pattern.*;
+import me.waynee95.rift.error.RiftException;
 import me.waynee95.rift.parse.RiftParser;
 import me.waynee95.rift.parse.RiftParserBaseVisitor;
 import org.antlr.v4.runtime.misc.Pair;
@@ -22,7 +23,8 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
             long value = Long.parseLong(ctx.INT_LIT().getText());
             return new Tree.IntLit(value, ctx);
         } catch (NumberFormatException e) {
-            throw new RuntimeException("Integer too big.");
+            throw new RiftException("Integer value is too big", ctx.getStart().getLine(),
+                    ctx.getStop().getCharPositionInLine());
         }
     }
 

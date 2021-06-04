@@ -3,10 +3,10 @@ package me.waynee95.rift;
 import me.waynee95.rift.ast.BuildAstVisitor;
 import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.error.ParseExceptionListener;
+import me.waynee95.rift.error.RiftException;
 import me.waynee95.rift.parse.RiftLexer;
 import me.waynee95.rift.parse.RiftParser;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -82,8 +82,9 @@ class Main implements Runnable {
                 if (printAst) {
                     System.out.println(ast);
                 }
-            } catch (ParseCancellationException e) {
-                onError(e.getMessage());
+
+            } catch (RiftException e) {
+                onError(e.msg, e.line, e.col);
             }
         } catch (IOException e) {
             onError(e.getMessage());
@@ -101,6 +102,10 @@ class Main implements Runnable {
     private static void onError(String msg) {
         System.err.println("error: " + msg);
         System.err.println("\nRejected.");
-        System.exit(-1);
+        System.exit(1);
+    }
+
+    private static void onError(String msg, int line, int col) {
+        onError(msg + " at " + line + ":" + col);
     }
 }
