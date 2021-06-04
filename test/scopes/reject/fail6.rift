@@ -1,0 +1,8 @@
+let
+  var c = 10
+
+  fn add(x: i64): i64 = x + c
+in
+  let val y = 13 in add(y) end;
+  add(y)
+end

@@ -38,6 +38,10 @@ public class Scope {
     public String toString() {
         var sb = new StringBuilder();
 
+        if (symbols.isEmpty()) {
+            return "<empty>";
+        }
+
         Scope scope = this;
         sb.append("----").append("\n");
         while (scope != null) {

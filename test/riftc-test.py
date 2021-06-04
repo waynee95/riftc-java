@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--srcdir", default=".", help="specify the source folder of the Rift compiler")
 parser.add_argument("--testdir", default="test", help="specify the folder for all test cases (default: src_dir/test")
 parser.add_argument("--verbose", default=False, help="print every result from every test file")
-parser.add_argument("--phase", nargs="+", choices=("lex", "parse", "typecheck"), help="specify which test cases to run. default=all")
+parser.add_argument("--phase", nargs="+", choices=("lex", "parse", "scopes", "typecheck"), help="specify which test cases to run. default=all")
 args = parser.parse_args()
 
 src_dir = args.srcdir
@@ -25,7 +25,7 @@ verbose = args.verbose
 test_cases = args.phase
 
 if test_cases == None:
-  test_cases = ["lex", "parse", "typecheck"]
+  test_cases = ["lex", "parse", "scopes", "typecheck"]
 
 print(os.path.join(src_dir, "Makefile"))
 

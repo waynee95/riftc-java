@@ -1,0 +1,4 @@
+let
+  fn id(x: i64): i64 = y
+in
+end
