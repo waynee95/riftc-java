@@ -14,7 +14,7 @@ import java.util.Optional;
 public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     @Override
     public Node visitProgram(RiftParser.ProgramContext ctx) {
-        return super.visitProgram(ctx);
+        return new Tree.Program(visit(ctx.expr()), ctx);
     }
 
     @Override
