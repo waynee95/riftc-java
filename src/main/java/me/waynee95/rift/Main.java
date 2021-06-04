@@ -1,11 +1,13 @@
 package me.waynee95.rift;
 
 import me.waynee95.rift.ast.BuildAstVisitor;
-import me.waynee95.rift.ast.Node;
+import me.waynee95.rift.ast.Tree;
 import me.waynee95.rift.error.ParseExceptionListener;
 import me.waynee95.rift.error.RiftException;
 import me.waynee95.rift.parse.RiftLexer;
 import me.waynee95.rift.parse.RiftParser;
+import me.waynee95.rift.scope.Scope;
+import me.waynee95.rift.scope.ScopeVisitor;
 import org.antlr.v4.runtime.*;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -34,7 +36,9 @@ class Main implements Runnable {
     @Option(names = "--print-ast", description = "Print the AST of the input file.")
     boolean printAst = false;
 
-    // TODO: --scopes dumps symbol table for each scope
+    @Option(names = "--scopes", description = "Print the AST of the input file.")
+    boolean scopes = false;
+
     // TODO: --typecheck to run the type checker on the input file
 
     public static void main(String[] args) {
@@ -69,6 +73,7 @@ class Main implements Runnable {
                     token = lexer.nextToken();
                     printToken(token);
                 }
+                System.out.print("\n");
             }
 
             RiftParser parser = new RiftParser(new CommonTokenStream(lexer));
@@ -77,10 +82,23 @@ class Main implements Runnable {
 
             try {
                 RiftParser.ProgramContext prog = parser.program();
-                Node ast = new BuildAstVisitor().visitProgram(prog);
+                Tree.Program ast = (Tree.Program) new BuildAstVisitor().visitProgram(prog);
 
                 if (printAst) {
                     System.out.println(ast);
+                }
+
+                // When parse flag is enabled, we just parse the file and then exit
+                if (parse) {
+                    onSuccess();
+                }
+
+                Scope globalScope = new Scope(null);
+                ScopeVisitor sv = new ScopeVisitor();
+                sv.visit(ast, globalScope);
+
+                if (scopes) {
+                    // TODO: Print scopes
                 }
 
             } catch (RiftException e) {
@@ -90,6 +108,10 @@ class Main implements Runnable {
             onError(e.getMessage());
         }
 
+        onSuccess();
+    }
+
+    private void onSuccess() {
         System.out.println("\nAccepted.");
         System.exit(0);
     }
