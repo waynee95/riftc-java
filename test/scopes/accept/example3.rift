@@ -1,0 +1,12 @@
+let
+  extern print_int(n: i64)
+
+  type Person = { name: string, age: i64 }
+
+  fn print_age(p: Person) =
+    match p with
+      | { name, age } => print_int(age)
+
+in
+
+end
