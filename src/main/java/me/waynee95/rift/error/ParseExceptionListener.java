@@ -9,6 +9,6 @@ public class ParseExceptionListener extends BaseErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int col,
             String msg, RecognitionException e) {
-        throw new RiftException(msg, line, col);
+        throw new RiftException("(" + line + ":" + col + ") " + msg);
     }
 }
