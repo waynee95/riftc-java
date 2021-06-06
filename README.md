@@ -8,7 +8,7 @@
 - [x] Parser
 - [x] AST
 - [ ] Type Checking
-- [ ] TAC Gen
+- [ ] IR Gen
 - [ ] Backend
 
 ## Build
