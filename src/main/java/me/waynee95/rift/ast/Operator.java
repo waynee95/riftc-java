@@ -1,7 +1,7 @@
 package me.waynee95.rift.ast;
 
 public class Operator {
-    enum Op {
+    public enum Op {
         ADD("+"),
         SUB("-"),
         MULT("*"),

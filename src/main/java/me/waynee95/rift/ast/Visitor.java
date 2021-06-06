@@ -1,132 +1,144 @@
 package me.waynee95.rift.ast;
 
-import me.waynee95.rift.ast.pattern.*;
+import me.waynee95.rift.ast.node.*;
+import me.waynee95.rift.ast.node.Record;
+import me.waynee95.rift.ast.node.decl.*;
+import me.waynee95.rift.ast.node.literal.BoolLit;
+import me.waynee95.rift.ast.node.literal.IntLit;
+import me.waynee95.rift.ast.node.literal.Literal;
+import me.waynee95.rift.ast.node.literal.StringLit;
+import me.waynee95.rift.ast.node.pattern.*;
+import me.waynee95.rift.ast.node.reference.FieldAccess;
+import me.waynee95.rift.ast.node.reference.FuncCall;
+import me.waynee95.rift.ast.node.reference.Index;
+import me.waynee95.rift.ast.node.reference.Name;
+import me.waynee95.rift.ast.node.type.*;
 
 import java.util.List;
 
 public interface Visitor<C> {
 
-    default void visit(Tree.Program node, C ctx) {
+    default void visit(Program node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Literal node, C ctx) {
+    default void visit(Literal node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.IntLit node, C ctx) {
+    default void visit(IntLit node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.BoolLit node, C ctx) {
+    default void visit(BoolLit node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.StringLit node, C ctx) {
+    default void visit(StringLit node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Binary node, C ctx) {
+    default void visit(Binary node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Unary node, C ctx) {
+    default void visit(Unary node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Array node, C ctx) {
+    default void visit(Array node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Record node, C ctx) {
+    default void visit(Record node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Constructor node, C ctx) {
+    default void visit(Constructor node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Name node, C ctx) {
+    default void visit(Name node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.FuncCall node, C ctx) {
+    default void visit(FuncCall node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.FieldAccess node, C ctx) {
+    default void visit(FieldAccess node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Index node, C ctx) {
+    default void visit(Index node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Assign node, C ctx) {
+    default void visit(Assign node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.If node, C ctx) {
+    default void visit(If node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Body node, C ctx) {
+    default void visit(Body node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.While node, C ctx) {
+    default void visit(While node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Break node, C ctx) {
+    default void visit(Break node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Let node, C ctx) {
+    default void visit(Let node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.TInt node, C ctx) {
+    default void visit(TInt node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.TBool node, C ctx) {
+    default void visit(TBool node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.TString node, C ctx) {
+    default void visit(TString node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.TCustom node, C ctx) {
+    default void visit(TCustom node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.TArray node, C ctx) {
+    default void visit(TArray node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.RecordTypeDecl node, C ctx) {
+    default void visit(RecordTypeDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.EnumTypeDecl node, C ctx) {
+    default void visit(EnumTypeDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.VarDecl node, C ctx) {
+    default void visit(VarDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.FuncDecl node, C ctx) {
+    default void visit(FuncDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.ExternDecl node, C ctx) {
+    default void visit(ExternDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Tree.Match node, C ctx) {
+    default void visit(Match node, C ctx) {
         visitOthers(node, ctx);
     }
 

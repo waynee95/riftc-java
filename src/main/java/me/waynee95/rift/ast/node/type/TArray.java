@@ -1,23 +1,20 @@
-package me.waynee95.rift.ast.pattern;
+package me.waynee95.rift.ast.node.type;
 
-import me.waynee95.rift.ast.Tree;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.List;
+public class TArray extends TypeLit {
+    public final TypeLit elemType;
 
-public class RecordPattern extends Pattern {
-    public final List<Tree.VarDecl> fields;
-
-    public RecordPattern(List<Tree.VarDecl> fields, ParserRuleContext context) {
-        super("record_pattern", context);
-        this.fields = fields;
+    public TArray(TypeLit elemType, ParserRuleContext ctx) {
+        super("type_array", ctx);
+        this.elemType = elemType;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> fields;
+            case 0 -> elemType;
             default -> throw new IndexOutOfBoundsException();
         };
     }

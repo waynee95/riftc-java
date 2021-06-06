@@ -1,7 +1,7 @@
 package me.waynee95.rift;
 
 import me.waynee95.rift.ast.BuildAstVisitor;
-import me.waynee95.rift.ast.Tree;
+import me.waynee95.rift.ast.node.Program;
 import me.waynee95.rift.error.ParseExceptionListener;
 import me.waynee95.rift.error.RiftException;
 import me.waynee95.rift.parse.RiftLexer;
@@ -82,10 +82,11 @@ class Main implements Runnable {
 
             try {
                 RiftParser.ProgramContext prog = parser.program();
-                Tree.Program ast = (Tree.Program) new BuildAstVisitor().visitProgram(prog);
+                Program ast = (Program) new BuildAstVisitor().visitProgram(prog);
 
                 if (printAst) {
                     System.out.println(ast);
+                    System.out.print("\n");
                 }
 
                 // When parse flag is enabled, we just parse the file and then exit
@@ -102,7 +103,7 @@ class Main implements Runnable {
                 }
 
             } catch (RiftException e) {
-                onError(e.msg, e.line, e.col);
+                onError(e.getMessage());
             }
         } catch (IOException e) {
             onError(e.getMessage());
@@ -125,9 +126,5 @@ class Main implements Runnable {
         System.err.println("error: " + msg);
         System.err.println("\nRejected.");
         System.exit(1);
-    }
-
-    private static void onError(String msg, int line, int col) {
-        onError(msg + " at " + line + ":" + col);
     }
 }

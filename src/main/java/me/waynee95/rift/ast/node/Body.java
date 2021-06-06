@@ -1,21 +1,23 @@
-package me.waynee95.rift.ast.pattern;
+package me.waynee95.rift.ast.node;
 
 import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class ValuePattern extends Pattern {
-    public final Node value;
+import java.util.List;
 
-    public ValuePattern(Node value, ParserRuleContext context) {
-        super("value_pattern", context);
-        this.value = value;
+public class Body extends Node {
+    public final List<Node> nodes;
+
+    public Body(List<Node> Nodes, ParserRuleContext ctx) {
+        super("body", ctx);
+        this.nodes = Nodes;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> value;
+            case 0 -> nodes;
             default -> throw new IndexOutOfBoundsException();
         };
     }

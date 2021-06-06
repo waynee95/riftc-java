@@ -1,26 +1,26 @@
-package me.waynee95.rift.ast.pattern;
+package me.waynee95.rift.ast.node;
 
-
+import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
 
-public class ConstructorPattern extends Pattern {
-    public final String id;
-    public final List<Pattern> fields;
+public class Let extends Node {
+    public final List<Node> decls;
+    public final Node body;
 
-    public ConstructorPattern(String id, List<Pattern> fields, ParserRuleContext context) {
-        super("constructor_pattern", context);
-        this.id = id;
-        this.fields = fields;
+    public Let(List<Node> decls, Node body, ParserRuleContext ctx) {
+        super("let", ctx);
+        this.decls = decls;
+        this.body = body;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> id;
-            case 1 -> fields;
+            case 0 -> decls;
+            case 1 -> body;
             default -> throw new IndexOutOfBoundsException();
         };
     }

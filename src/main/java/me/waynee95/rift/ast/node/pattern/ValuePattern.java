@@ -1,21 +1,21 @@
-package me.waynee95.rift.ast.pattern;
+package me.waynee95.rift.ast.node.pattern;
 
-import me.waynee95.rift.ast.Tree;
+import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class VariablePattern extends Pattern {
-    public final Tree.VarDecl id;
+public class ValuePattern extends Pattern {
+    public final Node value;
 
-    public VariablePattern(Tree.VarDecl id, ParserRuleContext context) {
-        super("var_pattern", context);
-        this.id = id;
+    public ValuePattern(Node value, ParserRuleContext context) {
+        super("value_pattern", context);
+        this.value = value;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> id;
+            case 0 -> value;
             default -> throw new IndexOutOfBoundsException();
         };
     }

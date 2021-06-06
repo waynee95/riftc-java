@@ -1,13 +1,11 @@
-package me.waynee95.rift.ast.pattern;
-
+package me.waynee95.rift.ast.node.type;
 
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class WildCard extends Pattern {
-
-    public WildCard(ParserRuleContext context) {
-        super("else_pattern", context);
+public class TInt extends TypeLit {
+    public TInt(ParserRuleContext ctx) {
+        super("type_int", ctx);
     }
 
     @Override
@@ -25,3 +23,4 @@ public class WildCard extends Pattern {
         v.visit(this, ctx);
     }
 }
+
