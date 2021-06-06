@@ -1,13 +1,17 @@
 package me.waynee95.rift.scope;
 
 import me.waynee95.rift.ast.Visitor;
+import me.waynee95.rift.ast.node.Constructor;
 import me.waynee95.rift.ast.node.Let;
-import me.waynee95.rift.ast.node.decl.Decl;
-import me.waynee95.rift.ast.node.decl.FuncDecl;
-import me.waynee95.rift.ast.node.decl.RecordTypeDecl;
-import me.waynee95.rift.ast.node.decl.VarDecl;
+import me.waynee95.rift.ast.node.Match;
+import me.waynee95.rift.ast.node.Record;
+import me.waynee95.rift.ast.node.decl.*;
+import me.waynee95.rift.ast.node.pattern.ConstructorPattern;
+import me.waynee95.rift.ast.node.pattern.MatchCase;
 import me.waynee95.rift.ast.node.reference.FuncCall;
 import me.waynee95.rift.ast.node.reference.Name;
+import me.waynee95.rift.ast.node.type.TCustom;
+import me.waynee95.rift.ast.node.type.TypeLit;
 import me.waynee95.rift.error.RiftException;
 
 import java.util.Optional;
@@ -21,6 +25,7 @@ public class ScopeVisitor implements Visitor<Scope> {
 
     public void visit(VarDecl node, Scope ctx) {
         ctx.declare(node.id, node);
+        visitOthers(node, ctx);
     }
 
     public void visit(FuncDecl node, Scope ctx) {
@@ -48,7 +53,55 @@ public class ScopeVisitor implements Visitor<Scope> {
         visitOthers(node, ctx);
     }
 
-    // TODO: Custom Types
-    // TODO: Match
+    public void visit(Record node, Scope ctx) {
+        Optional<Decl> decl = ctx.lookup(node.id);
+        if (decl.isEmpty()) {
+            throw new RiftException("Undefined record type: " + node.id, Optional.of(node));
+        }
+    }
+
+    public void visit(EnumTypeDecl node, Scope ctx) {
+        ctx.declare(node.id, node);
+        for (VariantDecl variantDecl : node.constructors) {
+            ctx.declare(variantDecl.id, variantDecl);
+            visit(variantDecl, ctx);
+        }
+    }
+
+    public void visit(VariantDecl node, Scope ctx) {
+        for (TypeLit field : node.fields) {
+            if (field instanceof TCustom) {
+                visit((TCustom) field, ctx);
+            }
+        }
+    }
+
+    public void visit(Constructor node, Scope ctx) {
+        Optional<Decl> decl = ctx.lookup(node.id);
+        if (decl.isEmpty()) {
+            throw new RiftException("Undefined constructor: " + node.id, Optional.of(node));
+        }
+    }
+
+    public void visit(TCustom node, Scope ctx) {
+        Optional<Decl> decl = ctx.lookup(node.id);
+        if (decl.isEmpty()) {
+            throw new RiftException("Undefined custom type: " + node.id, Optional.of(node));
+        }
+    }
+
+    public void visit(Match node, Scope ctx) {
+        for (MatchCase matchCase : node.cases) {
+            var pattern = matchCase.pattern;
+            if (pattern instanceof ConstructorPattern) {
+                Optional<Decl> decl = ctx.lookup(((ConstructorPattern) pattern).id);
+                if (decl.isEmpty()) {
+                    throw new RiftException(
+                            "Undefined constructor: " + ((ConstructorPattern) pattern).id,
+                            Optional.of(node));
+                }
+            }
+        }
+    }
 }
 
