@@ -27,6 +27,6 @@ public class Program extends Node {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitProgram(this, ctx);
     }
 }

@@ -34,6 +34,6 @@ public class VariantDecl extends Decl {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitVariantDecl(this, ctx);
     }
 }

@@ -1,11 +1,10 @@
 package me.waynee95.rift.ast;
 
-import me.waynee95.rift.ast.node.*;
 import me.waynee95.rift.ast.node.Record;
+import me.waynee95.rift.ast.node.*;
 import me.waynee95.rift.ast.node.decl.*;
 import me.waynee95.rift.ast.node.literal.BoolLit;
 import me.waynee95.rift.ast.node.literal.IntLit;
-import me.waynee95.rift.ast.node.literal.Literal;
 import me.waynee95.rift.ast.node.literal.StringLit;
 import me.waynee95.rift.ast.node.pattern.*;
 import me.waynee95.rift.ast.node.reference.FieldAccess;
@@ -19,156 +18,151 @@ import java.util.Optional;
 
 public interface Visitor<C> {
 
-    default void visit(Program node, C ctx) {
+    default void visitProgram(Program node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Literal node, C ctx) {
+    default void visitIntLit(IntLit node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(IntLit node, C ctx) {
+    default void visitBoolLit(BoolLit node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(BoolLit node, C ctx) {
+    default void visitStringLit(StringLit node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(StringLit node, C ctx) {
+    default void visitBinary(Binary node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Binary node, C ctx) {
+    default void visitUnary(Unary node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Unary node, C ctx) {
+    default void visitArray(Array node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Array node, C ctx) {
+    default void visitRecord(Record node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Record node, C ctx) {
+    default void visitConstructor(Constructor node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Constructor node, C ctx) {
+    default void visitName(Name node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Name node, C ctx) {
+    default void visitFuncCall(FuncCall node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(FuncCall node, C ctx) {
+    default void visitFieldAccess(FieldAccess node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(FieldAccess node, C ctx) {
+    default void visitIndex(Index node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Index node, C ctx) {
+    default void visitAssign(Assign node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Assign node, C ctx) {
+    default void visitIf(If node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(If node, C ctx) {
+    default void visitBody(Body node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Body node, C ctx) {
+    default void visitWhile(While node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(While node, C ctx) {
+    default void visitBreak(Break node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Break node, C ctx) {
+    default void visitLet(Let node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Let node, C ctx) {
+    default void visitTInt(TInt node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(TInt node, C ctx) {
+    default void visitTBool(TBool node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(TBool node, C ctx) {
+    default void visitTString(TString node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(TString node, C ctx) {
+    default void visitTCustom(TCustom node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(TCustom node, C ctx) {
+    default void visitTArray(TArray node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(TArray node, C ctx) {
+    default void visitRecordTypeDecl(RecordTypeDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(RecordTypeDecl node, C ctx) {
+    default void visitEnumTypeDecl(EnumTypeDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(EnumTypeDecl node, C ctx) {
+    default void visitVariantDecl(VariantDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(VariantDecl node, C ctx) {
+    default void visitVarDecl(VarDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(VarDecl node, C ctx) {
+    default void visitFuncDecl(FuncDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(FuncDecl node, C ctx) {
+    default void visitExternDecl(ExternDecl node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(ExternDecl node, C ctx) {
+    default void visitMatch(Match node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(Match node, C ctx) {
+    default void visitMatchCase(MatchCase node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(MatchCase node, C ctx) {
+    default void visitConstructorPattern(ConstructorPattern node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(ConstructorPattern node, C ctx) {
+    default void visitRecordPattern(RecordPattern node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(RecordPattern node, C ctx) {
+    default void visitValuePattern(ValuePattern node, C ctx) {
         visitOthers(node, ctx);
     }
 
-    default void visit(ValuePattern node, C ctx) {
+    default void visitVariablePattern(VariablePattern node, C ctx) {
         visitOthers(node, ctx);
     }
 
-
-    default void visit(VariablePattern node, C ctx) {
-        visitOthers(node, ctx);
-    }
-
-    default void visit(WildCard node, C ctx) {
+    default void visitWildCard(WildCard node, C ctx) {
         visitOthers(node, ctx);
     }
 

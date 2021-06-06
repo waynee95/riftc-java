@@ -96,7 +96,7 @@ class Main implements Runnable {
 
                 Scope globalScope = new Scope(null);
                 ScopeVisitor sv = new ScopeVisitor();
-                sv.visit(ast, globalScope);
+                sv.visitProgram(ast, globalScope);
 
                 if (scopes) {
                     // TODO: Print scopes

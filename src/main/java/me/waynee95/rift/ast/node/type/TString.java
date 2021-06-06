@@ -20,6 +20,6 @@ public class TString extends TypeLit {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitTString(this, ctx);
     }
 }

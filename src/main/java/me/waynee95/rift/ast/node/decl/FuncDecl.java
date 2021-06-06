@@ -39,6 +39,6 @@ public class FuncDecl extends Decl {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitFuncDecl(this, ctx);
     }
 }

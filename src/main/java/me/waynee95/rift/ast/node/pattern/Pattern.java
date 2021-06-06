@@ -8,4 +8,5 @@ public abstract class Pattern extends Node {
     public Pattern(String displayName, ParserRuleContext context) {
         super(displayName, context);
     }
+
 }

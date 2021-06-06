@@ -33,6 +33,6 @@ public class Constructor extends Node {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitConstructor(this, ctx);
     }
 }

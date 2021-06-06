@@ -29,6 +29,6 @@ public class RecordPattern extends Pattern {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitRecordPattern(this, ctx);
     }
 }

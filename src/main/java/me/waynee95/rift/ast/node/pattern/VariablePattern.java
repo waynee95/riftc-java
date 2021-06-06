@@ -5,17 +5,17 @@ import me.waynee95.rift.ast.node.decl.VarDecl;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class VariablePattern extends Pattern {
-    public final VarDecl id;
+    public final VarDecl name;
 
-    public VariablePattern(VarDecl id, ParserRuleContext context) {
+    public VariablePattern(VarDecl name, ParserRuleContext context) {
         super("var_pattern", context);
-        this.id = id;
+        this.name = name;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> id;
+            case 0 -> name;
             default -> throw new IndexOutOfBoundsException();
         };
     }
@@ -27,6 +27,6 @@ public class VariablePattern extends Pattern {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitVariablePattern(this, ctx);
     }
 }

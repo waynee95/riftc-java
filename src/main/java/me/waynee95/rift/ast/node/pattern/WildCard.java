@@ -22,6 +22,6 @@ public class WildCard extends Pattern {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitWildCard(this, ctx);
     }
 }

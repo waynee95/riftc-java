@@ -30,6 +30,6 @@ public class TCustom extends TypeLit {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitTCustom(this, ctx);
     }
 }

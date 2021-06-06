@@ -32,6 +32,6 @@ public class Record extends Node {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitRecord(this, ctx);
     }
 }

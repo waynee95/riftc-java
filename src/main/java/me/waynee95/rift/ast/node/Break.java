@@ -21,6 +21,6 @@ public class Break extends Node {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitBreak(this, ctx);
     }
 }

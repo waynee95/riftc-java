@@ -20,7 +20,7 @@ public class TInt extends TypeLit {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visit(this, ctx);
+        v.visitTInt(this, ctx);
     }
 }
 
