@@ -254,14 +254,14 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
             return new RecordTypeDecl(id, fields, ctx);
         } else {
-            List<Pair<String, List<TypeLit>>> constructors = new ArrayList<>();
+            List<VariantDecl> constructors = new ArrayList<>();
 
             for (RiftParser.ConstructorContext constructor : ctx.typedec().constructor()) {
                 List<TypeLit> types = new ArrayList<>();
                 for (RiftParser.TypeContext type : constructor.type()) {
                     types.add((TypeLit) visit(type));
                 }
-                constructors.add(new Pair<>(constructor.TYPE_ID().getText(), types));
+                constructors.add(new VariantDecl(constructor.TYPE_ID().getText(), types, ctx));
             }
 
             return new EnumTypeDecl(id, constructors, ctx);

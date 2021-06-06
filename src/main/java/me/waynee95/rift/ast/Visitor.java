@@ -15,6 +15,7 @@ import me.waynee95.rift.ast.node.reference.Name;
 import me.waynee95.rift.ast.node.type.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Visitor<C> {
 
@@ -126,6 +127,10 @@ public interface Visitor<C> {
         visitOthers(node, ctx);
     }
 
+    default void visit(VariantDecl node, C ctx) {
+        visitOthers(node, ctx);
+    }
+
     default void visit(VarDecl node, C ctx) {
         visitOthers(node, ctx);
     }
@@ -173,6 +178,11 @@ public interface Visitor<C> {
             var child = iter.next();
             if (child instanceof Node) {
                 ((Node) child).accept(this, ctx);
+            }
+            if (child instanceof Optional) {
+                if (((Optional<Node>) child).isPresent()) {
+                    ((Optional<Node>) child).get().accept(this, ctx);
+                }
             } else if (child instanceof List) {
                 for (Object n : ((List) child)) {
                     ((Node) n).accept(this, ctx);
