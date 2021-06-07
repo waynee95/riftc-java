@@ -1,0 +1,6 @@
+let
+  val x = true
+  val y = !true
+in
+  x + y
+end
