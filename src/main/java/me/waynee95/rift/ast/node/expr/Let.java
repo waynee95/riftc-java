@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
 
-public class Let extends Node {
+public class Let extends Expr {
     public final List<Node> decls;
     public final Node body;
 

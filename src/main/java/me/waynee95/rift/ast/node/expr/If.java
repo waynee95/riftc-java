@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
-public class If extends Node {
+public class If extends Expr {
     public final Node cond;
     public final Node trueBranch;
     public final Optional<Node> falseBranch;

@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
 
-public class Match extends Node {
+public class Match extends Expr {
     public final Node expr;
     public final List<MatchCase> cases;
 
