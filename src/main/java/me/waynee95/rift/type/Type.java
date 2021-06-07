@@ -1,4 +1,6 @@
 package me.waynee95.rift.type;
 
-public class Type {
+public abstract class Type {
+
+    public abstract boolean eq(Type that);
 }

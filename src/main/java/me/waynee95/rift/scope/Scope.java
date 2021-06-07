@@ -17,8 +17,7 @@ public class Scope {
 
     public void declare(String name, Decl decl) {
         if (symbols.containsKey(name)) {
-            throw new RiftException("Identifier " + name + " already exists!",
-                    Optional.ofNullable(decl));
+            throw new RiftException("Identifier " + name + " already exists!", decl);
         }
         symbols.put(name, decl);
     }

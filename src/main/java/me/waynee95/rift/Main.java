@@ -8,7 +8,11 @@ import me.waynee95.rift.parse.RiftLexer;
 import me.waynee95.rift.parse.RiftParser;
 import me.waynee95.rift.scope.Scope;
 import me.waynee95.rift.scope.ScopeVisitor;
-import org.antlr.v4.runtime.*;
+import me.waynee95.rift.typecheck.TypeCheckVisitor;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -39,7 +43,8 @@ class Main implements Runnable {
     @Option(names = "--scopes", description = "Print the AST of the input file.")
     boolean scopes = false;
 
-    // TODO: --typecheck to run the type checker on the input file
+    @Option(names = "--typecheck", description = "Run the typechecker on the input file.")
+    boolean typecheck = false;
 
     public static void main(String[] args) {
         new CommandLine(new Main()).execute(args);
@@ -100,7 +105,16 @@ class Main implements Runnable {
 
                 if (scopes) {
                     // TODO: Print scopes
+                    onSuccess();
                 }
+
+                TypeCheckVisitor tcv = new TypeCheckVisitor();
+                tcv.visitProgram(ast, globalScope);
+
+                if (typecheck) {
+                    onSuccess();
+                }
+
 
             } catch (RiftException e) {
                 onError(e.getMessage());

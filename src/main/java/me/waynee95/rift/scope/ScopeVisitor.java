@@ -1,12 +1,11 @@
 package me.waynee95.rift.scope;
 
 import me.waynee95.rift.ast.Visitor;
-import me.waynee95.rift.ast.node.*;
-import me.waynee95.rift.ast.node.Record;
 import me.waynee95.rift.ast.node.decl.*;
+import me.waynee95.rift.ast.node.expr.Record;
+import me.waynee95.rift.ast.node.expr.*;
+import me.waynee95.rift.ast.node.location.Name;
 import me.waynee95.rift.ast.node.pattern.*;
-import me.waynee95.rift.ast.node.reference.FuncCall;
-import me.waynee95.rift.ast.node.reference.Name;
 import me.waynee95.rift.ast.node.type.TCustom;
 import me.waynee95.rift.ast.node.type.TypeLit;
 import me.waynee95.rift.error.RiftException;
@@ -49,15 +48,16 @@ public class ScopeVisitor implements Visitor<Scope> {
     public void visitName(Name node, Scope ctx) {
         Optional<Decl> decl = ctx.lookup(node.id);
         if (decl.isEmpty()) {
-            throw new RiftException("Undefined variable: " + node.id, Optional.of(node));
+            throw new RiftException("Undefined variable: " + node.id, node);
         }
+        node.setDecl(decl.get());
     }
 
     @Override
     public void visitFuncCall(FuncCall node, Scope ctx) {
         Optional<Decl> decl = ctx.lookup(node.id);
         if (decl.isEmpty()) {
-            throw new RiftException("Undefined function: " + node.id, Optional.of(node));
+            throw new RiftException("Undefined function: " + node.id, node);
         }
         visitOthers(node, ctx);
     }
@@ -66,7 +66,7 @@ public class ScopeVisitor implements Visitor<Scope> {
     public void visitRecord(Record node, Scope ctx) {
         Optional<Decl> decl = ctx.lookup(node.id);
         if (decl.isEmpty()) {
-            throw new RiftException("Undefined record type: " + node.id, Optional.of(node));
+            throw new RiftException("Undefined record type: " + node.id, node);
         }
     }
 
@@ -92,7 +92,7 @@ public class ScopeVisitor implements Visitor<Scope> {
     public void visitConstructor(Constructor node, Scope ctx) {
         Optional<Decl> decl = ctx.lookup(node.id);
         if (decl.isEmpty()) {
-            throw new RiftException("Undefined constructor: " + node.id, Optional.of(node));
+            throw new RiftException("Undefined constructor: " + node.id, node);
         }
     }
 
@@ -100,7 +100,7 @@ public class ScopeVisitor implements Visitor<Scope> {
     public void visitTCustom(TCustom node, Scope ctx) {
         Optional<Decl> decl = ctx.lookup(node.id);
         if (decl.isEmpty()) {
-            throw new RiftException("Undefined custom type: " + node.id, Optional.of(node));
+            throw new RiftException("Undefined custom type: " + node.id, node);
         }
     }
 
@@ -122,7 +122,7 @@ public class ScopeVisitor implements Visitor<Scope> {
     public void visitConstructorPattern(ConstructorPattern pattern, Scope ctx) {
         Optional<Decl> decl = ctx.lookup(pattern.id);
         if (decl.isEmpty()) {
-            throw new RiftException("Undefined constructor: " + pattern.id, Optional.of(pattern));
+            throw new RiftException("Undefined constructor: " + pattern.id, pattern);
         }
         for (Pattern field : pattern.fields) {
             field.accept(this, ctx);

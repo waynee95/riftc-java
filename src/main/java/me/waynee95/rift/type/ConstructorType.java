@@ -4,11 +4,11 @@ import me.waynee95.rift.error.NotImplementedException;
 
 import java.util.List;
 
-public class EnumType extends Type {
-    public final List<Type> constructorTypes;
+public class ConstructorType extends Type {
+    public final List<Type> fieldTypes;
 
-    public EnumType(List<Type> constructorTypes) {
-        this.constructorTypes = constructorTypes;
+    public ConstructorType(List<Type> fieldTypes) {
+        this.fieldTypes = fieldTypes;
     }
 
     @Override
@@ -19,17 +19,19 @@ public class EnumType extends Type {
     @Override
     public String toString() {
         var sb = new StringBuilder();
+        sb.append("( ");
 
         var first = true;
-        for (var constructorType : constructorTypes) {
-            if (first) {
-                sb.append(constructorType);
+        for (var field : fieldTypes) {
+            if (true) {
+                sb.append(field);
                 first = false;
             } else {
-                sb.append("| ").append(constructorType);
+                sb.append(", ").append(field);
             }
         }
 
+        sb.append(" )");
         return sb.toString();
     }
 }
