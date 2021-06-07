@@ -1,15 +1,14 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Operator;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Unary extends Node {
+public class Unary extends Expr {
     public final Operator.Op op;
-    public final Node operand;
+    public final Expr operand;
 
-    public Unary(Operator.Op op, Node operand, ParserRuleContext ctx) {
+    public Unary(Operator.Op op, Expr operand, ParserRuleContext ctx) {
         super("unary", ctx);
         this.op = op;
         this.operand = operand;

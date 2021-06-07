@@ -1,14 +1,13 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class While extends Node {
-    public final Node cond;
-    public final Node body;
+public class While extends Expr {
+    public final Expr cond;
+    public final Body body;
 
-    public While(Node cond, Node body, ParserRuleContext ctx) {
+    public While(Expr cond, Body body, ParserRuleContext ctx) {
         super("while", ctx);
         this.cond = cond;
         this.body = body;
@@ -26,6 +25,11 @@ public class While extends Node {
     @Override
     public int childCount() {
         return 2;
+    }
+
+    @Override
+    public boolean hasReturnValue() {
+        return false;
     }
 
     @Override

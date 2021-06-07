@@ -1,16 +1,17 @@
 package me.waynee95.rift.ast;
 
-import me.waynee95.rift.ast.node.Record;
-import me.waynee95.rift.ast.node.*;
+import me.waynee95.rift.ast.node.Node;
+import me.waynee95.rift.ast.node.Program;
 import me.waynee95.rift.ast.node.decl.*;
+import me.waynee95.rift.ast.node.expr.Record;
+import me.waynee95.rift.ast.node.expr.*;
 import me.waynee95.rift.ast.node.literal.BoolLit;
 import me.waynee95.rift.ast.node.literal.IntLit;
 import me.waynee95.rift.ast.node.literal.StringLit;
+import me.waynee95.rift.ast.node.location.FieldAccess;
+import me.waynee95.rift.ast.node.location.Index;
+import me.waynee95.rift.ast.node.location.Name;
 import me.waynee95.rift.ast.node.pattern.*;
-import me.waynee95.rift.ast.node.reference.FieldAccess;
-import me.waynee95.rift.ast.node.reference.FuncCall;
-import me.waynee95.rift.ast.node.reference.Index;
-import me.waynee95.rift.ast.node.reference.Name;
 import me.waynee95.rift.ast.node.type.*;
 
 import java.util.List;

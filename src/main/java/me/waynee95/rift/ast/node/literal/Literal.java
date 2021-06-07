@@ -1,9 +1,9 @@
 package me.waynee95.rift.ast.node.literal;
 
-import me.waynee95.rift.ast.Node;
+import me.waynee95.rift.ast.node.expr.Expr;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public abstract class Literal<T> extends Node {
+public abstract class Literal<T> extends Expr {
     public final T value;
 
     public Literal(String displayName, T value, ParserRuleContext ctx) {

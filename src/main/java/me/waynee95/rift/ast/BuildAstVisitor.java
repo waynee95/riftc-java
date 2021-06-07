@@ -1,16 +1,18 @@
 package me.waynee95.rift.ast;
 
-import me.waynee95.rift.ast.node.*;
-import me.waynee95.rift.ast.node.Record;
+import me.waynee95.rift.ast.node.Node;
+import me.waynee95.rift.ast.node.Program;
 import me.waynee95.rift.ast.node.decl.*;
+import me.waynee95.rift.ast.node.expr.Record;
+import me.waynee95.rift.ast.node.expr.*;
 import me.waynee95.rift.ast.node.literal.BoolLit;
 import me.waynee95.rift.ast.node.literal.IntLit;
 import me.waynee95.rift.ast.node.literal.StringLit;
+import me.waynee95.rift.ast.node.location.FieldAccess;
+import me.waynee95.rift.ast.node.location.Index;
+import me.waynee95.rift.ast.node.location.Location;
+import me.waynee95.rift.ast.node.location.Name;
 import me.waynee95.rift.ast.node.pattern.*;
-import me.waynee95.rift.ast.node.reference.FieldAccess;
-import me.waynee95.rift.ast.node.reference.FuncCall;
-import me.waynee95.rift.ast.node.reference.Index;
-import me.waynee95.rift.ast.node.reference.Name;
 import me.waynee95.rift.ast.node.type.*;
 import me.waynee95.rift.error.RiftException;
 import me.waynee95.rift.parse.RiftParser;
@@ -52,15 +54,15 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitUnary(RiftParser.UnaryContext ctx) {
-        var operand = visit(ctx.expr());
+        var operand = (Expr) visit(ctx.expr());
         var op = Operator.fromString(ctx.op.getText());
         return new Unary(op, operand, ctx);
     }
 
     @Override
     public Node visitBinary(RiftParser.BinaryContext ctx) {
-        var lhs = visit(ctx.left);
-        var rhs = visit(ctx.right);
+        var lhs = (Expr) visit(ctx.left);
+        var rhs = (Expr) visit(ctx.right);
         var op = Operator.fromString(ctx.op.getText());
         return new Binary(lhs, rhs, op, ctx);
     }
@@ -72,27 +74,27 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitArray(RiftParser.ArrayContext ctx) {
-        List<Node> exprs = new ArrayList<>();
+        List<Expr> exprs = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            exprs.add(visit(expr));
+            exprs.add((Expr) visit(expr));
         }
         return new Array(exprs, ctx);
     }
 
     @Override
     public Node visitRecord(RiftParser.RecordContext ctx) {
-        List<Node> params = new ArrayList<>();
+        List<Expr> params = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            params.add(visit(expr));
+            params.add((Expr) visit(expr));
         }
         return new Record(ctx.TYPE_ID().getText(), params, ctx);
     }
 
     @Override
     public Node visitCons(RiftParser.ConsContext ctx) {
-        List<Node> params = new ArrayList<>();
+        List<Expr> params = new ArrayList<>();
         for (var expr : ctx.expr()) {
-            params.add(visit(expr));
+            params.add((Expr) visit(expr));
         }
         return new Constructor(ctx.TYPE_ID().getText(), params, ctx);
     }
@@ -104,9 +106,9 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitFuncCall(RiftParser.FuncCallContext ctx) {
-        List<Node> args = new ArrayList<>();
+        List<Expr> args = new ArrayList<>();
         for (RiftParser.ExprContext arg : ctx.expr()) {
-            args.add(visit(arg));
+            args.add((Expr) visit(arg));
         }
         return new FuncCall(ctx.ID().getText(), args, ctx);
     }
@@ -126,8 +128,8 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitAssign(RiftParser.AssignContext ctx) {
-        var lhs = visit(ctx.lvalue());
-        var rhs = visit(ctx.expr());
+        var lhs = (Location) visit(ctx.lvalue());
+        var rhs = (Expr) visit(ctx.expr());
         return new Assign(lhs, rhs, ctx);
     }
 
@@ -146,17 +148,17 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
 
     @Override
     public Node visitExprs(RiftParser.ExprsContext ctx) {
-        List<Node> exprs = new ArrayList<>();
+        List<Expr> exprs = new ArrayList<>();
         for (RiftParser.ExprContext expr : ctx.expr()) {
-            exprs.add(visit(expr));
+            exprs.add((Expr) visit(expr));
         }
         return new Body(exprs, ctx);
     }
 
     @Override
     public Node visitWhile(RiftParser.WhileContext ctx) {
-        var cond = visit(ctx.cond);
-        var body = visit(ctx.exprs());
+        var cond = (Expr) visit(ctx.cond);
+        var body = (Body) visit(ctx.exprs());
         return new While(cond, body, ctx);
     }
 
@@ -194,7 +196,7 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
     public Node visitVarDecl(RiftParser.VarDeclContext ctx) {
         TypeLit type = ctx.type() != null ? (TypeLit) visit(ctx.type()) : null;
         var immutable = ctx.VAL() != null ? true : false;
-        var value = visit(ctx.expr());
+        var value = (Expr) visit(ctx.expr());
 
         return new VarDecl(ctx.ID().getText(), Optional.of(value), Optional.ofNullable(type),
                 immutable, ctx);
@@ -309,12 +311,12 @@ public class BuildAstVisitor extends RiftParserBaseVisitor<Node> {
         for (int i = 0; i < ctx.matchcases().pattern().size(); i++) {
             var pattern = visit(ctx.matchcases().pattern(i));
             var body = visit(ctx.matchcases().exprs(i));
-            cases.add(new MatchCase((Pattern) pattern, body, ctx));
+            cases.add(new MatchCase((Pattern) pattern, (Body) body, ctx));
         }
 
         if (ctx.ELSE() != null) {
             var body = visit(ctx.exprs());
-            cases.add(new MatchCase(new WildCard(ctx), body, ctx));
+            cases.add(new MatchCase(new WildCard(ctx), (Body) body, ctx));
         }
 
         return new Match(expr, cases, ctx);

@@ -1,16 +1,12 @@
-package me.waynee95.rift.ast.node.reference;
+package me.waynee95.rift.ast.node.location;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
-import me.waynee95.rift.ast.node.decl.RecordTypeDecl;
+import me.waynee95.rift.ast.node.Node;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.Optional;
-
-public class FieldAccess extends Node {
+public class FieldAccess extends Location {
     public final Node location;
     public final String fieldName;
-    public Optional<RecordTypeDecl> decl = Optional.empty();
 
     public FieldAccess(Node location, String fieldName, ParserRuleContext ctx) {
         super("field_access", ctx);

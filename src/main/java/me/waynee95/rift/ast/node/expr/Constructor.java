@@ -1,17 +1,16 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
 
-public class Constructor extends Node {
+public class Constructor extends Expr {
     public final String id;
-    public final List<Node> params;
+    public final List<Expr> params;
 
 
-    public Constructor(String id, List<Node> params, ParserRuleContext ctx) {
+    public Constructor(String id, List<Expr> params, ParserRuleContext ctx) {
         super("constructor", ctx);
         this.id = id;
         this.params = params;

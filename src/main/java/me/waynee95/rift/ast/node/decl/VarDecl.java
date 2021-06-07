@@ -1,18 +1,18 @@
 package me.waynee95.rift.ast.node.decl;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
+import me.waynee95.rift.ast.node.expr.Expr;
 import me.waynee95.rift.ast.node.type.TypeLit;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Optional;
 
 public class VarDecl extends Decl {
-    public final Optional<Node> value;
+    public final Optional<Expr> value;
     public final Optional<TypeLit> typeLit;
     public final boolean immutable;
 
-    public VarDecl(String id, Optional<Node> value, Optional<TypeLit> typeLit, boolean immutable,
+    public VarDecl(String id, Optional<Expr> value, Optional<TypeLit> typeLit, boolean immutable,
             ParserRuleContext ctx) {
         super(id, "var_decl", ctx);
         this.value = value;
@@ -25,6 +25,18 @@ public class VarDecl extends Decl {
         this.value = Optional.empty();
         this.typeLit = typeLit;
         this.immutable = false;
+    }
+
+    public boolean hasValue() {
+        return value.isPresent();
+    }
+
+    public boolean hasTypeSpecified() {
+        return typeLit.isPresent();
+    }
+
+    public boolean isImmutable() {
+        return immutable;
     }
 
     @Override

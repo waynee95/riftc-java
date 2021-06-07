@@ -1,7 +1,7 @@
 package me.waynee95.rift.ast.node.pattern;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
+import me.waynee95.rift.ast.node.Node;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ValuePattern extends Pattern {

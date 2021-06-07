@@ -1,16 +1,12 @@
-package me.waynee95.rift.ast.node.reference;
+package me.waynee95.rift.ast.node.location;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
-import me.waynee95.rift.ast.node.decl.VarDecl;
+import me.waynee95.rift.ast.node.Node;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.Optional;
-
-public class Index extends Node {
+public class Index extends Location {
     public final Node location;
     public final Node index;
-    public Optional<VarDecl> decl = Optional.empty();
 
     public Index(Node location, Node index, ParserRuleContext ctx) {
         super("index", ctx);

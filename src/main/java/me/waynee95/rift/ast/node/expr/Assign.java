@@ -1,14 +1,14 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
+import me.waynee95.rift.ast.node.location.Location;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Assign extends Node {
-    public final Node lhs;
-    public final Node rhs;
+public class Assign extends Expr {
+    public final Location lhs;
+    public final Expr rhs;
 
-    public Assign(Node lhs, Node rhs, ParserRuleContext ctx) {
+    public Assign(Location lhs, Expr rhs, ParserRuleContext ctx) {
         super("assign", ctx);
         this.lhs = lhs;
         this.rhs = rhs;
@@ -26,6 +26,11 @@ public class Assign extends Node {
     @Override
     public int childCount() {
         return 2;
+    }
+
+    @Override
+    public boolean hasReturnValue() {
+        return false;
     }
 
     @Override

@@ -1,20 +1,22 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Program extends Node {
-    public final Node expr;
+import java.util.List;
 
-    public Program(Node expr, ParserRuleContext ctx) {
-        super("prog", ctx);
-        this.expr = expr;
+public class Body extends Expr {
+    public final List<Expr> exprs;
+
+    public Body(List<Expr> exprs, ParserRuleContext ctx) {
+        super("body", ctx);
+        this.exprs = exprs;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> expr;
+            case 0 -> exprs;
             default -> throw new IndexOutOfBoundsException();
         };
     }
@@ -26,6 +28,6 @@ public class Program extends Node {
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visitProgram(this, ctx);
+        v.visitBody(this, ctx);
     }
 }

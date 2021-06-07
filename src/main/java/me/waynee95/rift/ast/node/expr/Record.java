@@ -1,34 +1,36 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;
 
-public class Array extends Node {
-    public final List<Node> elems;
+public class Record extends Expr {
+    public final String id;
+    public final List<Expr> params;
 
-    public Array(List<Node> elems, ParserRuleContext ctx) {
-        super("array", ctx);
-        this.elems = elems;
+    public Record(String id, List<Expr> params, ParserRuleContext ctx) {
+        super("record", ctx);
+        this.id = id;
+        this.params = params;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
-            case 0 -> elems;
+            case 0 -> id;
+            case 1 -> params;
             default -> throw new IndexOutOfBoundsException();
         };
     }
 
     @Override
     public int childCount() {
-        return 1;
+        return 2;
     }
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visitArray(this, ctx);
+        v.visitRecord(this, ctx);
     }
 }

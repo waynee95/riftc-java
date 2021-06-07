@@ -1,7 +1,7 @@
 package me.waynee95.rift.ast.node.decl;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
+import me.waynee95.rift.ast.node.Node;
 import me.waynee95.rift.ast.node.type.TypeLit;
 import org.antlr.v4.runtime.ParserRuleContext;
 

@@ -1,36 +1,36 @@
-package me.waynee95.rift.ast.node.reference;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Visitor;
-import me.waynee95.rift.ast.node.decl.VarDecl;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.Optional;
+import java.util.List;
 
-public class Name extends Node {
+public class FuncCall extends Expr {
     public final String id;
-    public Optional<VarDecl> decl = Optional.empty();
+    public final List<Expr> args;
 
-    public Name(String id, ParserRuleContext ctx) {
-        super("name", ctx);
+    public FuncCall(String id, List<Expr> args, ParserRuleContext ctx) {
+        super("call", ctx);
         this.id = id;
+        this.args = args;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
             case 0 -> id;
+            case 1 -> args;
             default -> throw new IndexOutOfBoundsException();
         };
     }
 
     @Override
     public int childCount() {
-        return 1;
+        return 2;
     }
 
     @Override
     public <C> void accept(Visitor<C> v, C ctx) {
-        v.visitName(this, ctx);
+        v.visitFuncCall(this, ctx);
     }
 }

@@ -1,16 +1,15 @@
-package me.waynee95.rift.ast.node;
+package me.waynee95.rift.ast.node.expr;
 
-import me.waynee95.rift.ast.Node;
 import me.waynee95.rift.ast.Operator;
 import me.waynee95.rift.ast.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Binary extends Node {
+public class Binary extends Expr {
     public final Operator.Op op;
-    public final Node left;
-    public final Node right;
+    public final Expr left;
+    public final Expr right;
 
-    public Binary(Node left, Node right, Operator.Op op, ParserRuleContext ctx) {
+    public Binary(Expr left, Expr right, Operator.Op op, ParserRuleContext ctx) {
         super("binary", ctx);
         this.op = op;
         this.left = left;
