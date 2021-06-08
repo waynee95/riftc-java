@@ -7,17 +7,13 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.Optional;
 
 public abstract class Location extends Expr {
-    private Decl decl;
+    public Optional<Decl> decl = Optional.empty();
 
     public Location(String displayName, ParserRuleContext ctx) {
         super(displayName, ctx);
     }
 
-    public Optional<Decl> getDecl() {
-        return Optional.ofNullable(decl);
-    }
-
     public void setDecl(Decl decl) {
-        this.decl = decl;
+        this.decl = Optional.of(decl);
     }
 }

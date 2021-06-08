@@ -21,6 +21,10 @@ public class FuncDecl extends Decl {
         this.body = body;
     }
 
+    public boolean hasReturnTypeSpecified() {
+        return returnType.isPresent();
+    }
+
     @Override
     public Object getChild(int index) {
         return switch (index) {

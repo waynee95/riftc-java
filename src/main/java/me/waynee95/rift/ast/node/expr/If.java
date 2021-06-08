@@ -18,6 +18,10 @@ public class If extends Expr {
         this.falseBranch = falseBranch;
     }
 
+    public boolean hasFalseBranch() {
+        return falseBranch.isPresent();
+    }
+
     @Override
     public Object getChild(int index) {
         return switch (index) {

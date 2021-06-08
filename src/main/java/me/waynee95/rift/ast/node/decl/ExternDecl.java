@@ -18,6 +18,10 @@ public class ExternDecl extends Decl {
         this.returnType = returnType;
     }
 
+    public boolean hasReturnTypeSpecified() {
+        return returnType.isPresent();
+    }
+
     @Override
     public Object getChild(int index) {
         return switch (index) {

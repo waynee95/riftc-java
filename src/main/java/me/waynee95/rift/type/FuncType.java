@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class FuncType extends Type {
-    public final Optional<Type> returnType;
     public final List<Type> paramTypes;
+    public final Optional<Type> returnType;
 
-    public FuncType(Optional<Type> returnType, List<Type> paramTypes) {
-        this.returnType = returnType;
+    public FuncType(List<Type> paramTypes, Type returnType) {
         this.paramTypes = paramTypes;
+        this.returnType = Optional.of(returnType);
+    }
+
+    public FuncType(List<Type> paramTypes) {
+        this.paramTypes = paramTypes;
+        this.returnType = Optional.empty();
     }
 
     public int arity() {

@@ -10,7 +10,7 @@ import java.util.Optional;
 public abstract class Node implements Iterable<Object> {
     public final ParserRuleContext ctx;
     public final String displayName;
-    private Type type;
+    public Optional<Type> type = Optional.empty();
 
     public Node(String displayName, ParserRuleContext ctx) {
         this.displayName = displayName;
@@ -26,21 +26,13 @@ public abstract class Node implements Iterable<Object> {
         return ctx.getStop().getCharPositionInLine() + 1;
     }
 
+    public void setType(Type that) {
+        type = Optional.of(that);
+    }
+
     public abstract Object getChild(int index);
 
     public abstract int childCount();
-
-    public Optional<Type> getType() {
-        return Optional.ofNullable(type);
-    }
-
-    public boolean hasNoType() {
-        return getType().isEmpty();
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
 
     public abstract <C> void accept(Visitor<C> v, C ctx);
 

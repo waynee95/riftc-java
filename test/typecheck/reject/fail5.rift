@@ -1,0 +1,8 @@
+let
+  val c = 10
+
+  fn add10(x: i64): i64 = x + c
+in
+  add10(10);
+  add10(true)
+end

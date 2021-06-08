@@ -9,19 +9,19 @@ import java.util.List;
 
 public class Match extends Expr {
     public final Node expr;
-    public final List<MatchCase> cases;
+    public final List<MatchCase> matchCases;
 
-    public Match(Node expr, List<MatchCase> cases, ParserRuleContext ctx) {
+    public Match(Node expr, List<MatchCase> matchCases, ParserRuleContext ctx) {
         super("match", ctx);
         this.expr = expr;
-        this.cases = cases;
+        this.matchCases = matchCases;
     }
 
     @Override
     public Object getChild(int index) {
         return switch (index) {
             case 0 -> expr;
-            case 1 -> cases;
+            case 1 -> matchCases;
             default -> throw new IndexOutOfBoundsException();
         };
     }
