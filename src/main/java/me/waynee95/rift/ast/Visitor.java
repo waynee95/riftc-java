@@ -1,6 +1,5 @@
 package me.waynee95.rift.ast;
 
-import me.waynee95.rift.ast.node.Node;
 import me.waynee95.rift.ast.node.Program;
 import me.waynee95.rift.ast.node.decl.*;
 import me.waynee95.rift.ast.node.expr.Record;
@@ -14,175 +13,176 @@ import me.waynee95.rift.ast.node.location.Name;
 import me.waynee95.rift.ast.node.pattern.*;
 import me.waynee95.rift.ast.node.type.*;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface Visitor<C> {
 
     default void visitProgram(Program node, C ctx) {
-        visitOthers(node, ctx);
+        node.expr.accept(this, ctx);
     }
 
     default void visitIntLit(IntLit node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitBoolLit(BoolLit node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitStringLit(StringLit node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitBinary(Binary node, C ctx) {
-        visitOthers(node, ctx);
+        node.left.accept(this, ctx);
+        node.right.accept(this, ctx);
     }
 
     default void visitUnary(Unary node, C ctx) {
-        visitOthers(node, ctx);
+        node.operand.accept(this, ctx);
     }
 
     default void visitArray(Array node, C ctx) {
-        visitOthers(node, ctx);
+        node.elems.forEach(elem -> elem.accept(this, ctx));
     }
 
     default void visitRecord(Record node, C ctx) {
-        visitOthers(node, ctx);
+        node.params.forEach(param -> param.accept(this, ctx));
     }
 
     default void visitConstructor(Constructor node, C ctx) {
-        visitOthers(node, ctx);
+        node.params.forEach(param -> param.accept(this, ctx));
     }
 
     default void visitName(Name node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitFuncCall(FuncCall node, C ctx) {
-        visitOthers(node, ctx);
+        node.args.forEach(arg -> arg.accept(this, ctx));
     }
 
     default void visitFieldAccess(FieldAccess node, C ctx) {
-        visitOthers(node, ctx);
+        node.location.accept(this, ctx);
     }
 
     default void visitIndex(Index node, C ctx) {
-        visitOthers(node, ctx);
+        node.location.accept(this, ctx);
+        node.index.accept(this, ctx);
     }
 
     default void visitAssign(Assign node, C ctx) {
-        visitOthers(node, ctx);
+        node.lhs.accept(this, ctx);
+        node.rhs.accept(this, ctx);
     }
 
     default void visitIf(If node, C ctx) {
-        visitOthers(node, ctx);
+        node.cond.accept(this, ctx);
+        node.trueBranch.accept(this, ctx);
+        if (node.hasFalseBranch()) {
+            node.falseBranch.get().accept(this, ctx);
+        }
     }
 
     default void visitBody(Body node, C ctx) {
-        visitOthers(node, ctx);
+        node.exprs.forEach(expr -> expr.accept(this, ctx));
     }
 
     default void visitWhile(While node, C ctx) {
-        visitOthers(node, ctx);
+        node.cond.accept(this, ctx);
+        node.body.accept(this, ctx);
     }
 
     default void visitBreak(Break node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitLet(Let node, C ctx) {
-        visitOthers(node, ctx);
+        node.decls.forEach(decl -> decl.accept(this, ctx));
+        node.body.accept(this, ctx);
     }
 
     default void visitTInt(TInt node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitTBool(TBool node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitTString(TString node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitTCustom(TCustom node, C ctx) {
-        visitOthers(node, ctx);
+        // Do nothing
     }
 
     default void visitTArray(TArray node, C ctx) {
-        visitOthers(node, ctx);
+        node.elemType.accept(this, ctx);
     }
 
     default void visitRecordTypeDecl(RecordTypeDecl node, C ctx) {
-        visitOthers(node, ctx);
+        node.fields.forEach(field -> field.b.accept(this, ctx));
     }
 
     default void visitEnumTypeDecl(EnumTypeDecl node, C ctx) {
-        visitOthers(node, ctx);
+        node.constructors.forEach(constructor -> constructor.accept(this, ctx));
     }
 
     default void visitVariantDecl(VariantDecl node, C ctx) {
-        visitOthers(node, ctx);
+        node.fields.forEach(field -> field.accept(this, ctx));
     }
 
     default void visitVarDecl(VarDecl node, C ctx) {
-        visitOthers(node, ctx);
+        if (node.hasValue()) {
+            node.value.get().accept(this, ctx);
+        }
+        if (node.hasTypeSpecified()) {
+            node.typeLit.get().accept(this, ctx);
+        }
     }
 
     default void visitFuncDecl(FuncDecl node, C ctx) {
-        visitOthers(node, ctx);
+        node.params.forEach(param -> param.accept(this, ctx));
+        if (node.hasReturnTypeSpecified()) {
+            node.returnType.get().accept(this, ctx);
+        }
+        node.body.accept(this, ctx);
     }
 
     default void visitExternDecl(ExternDecl node, C ctx) {
-        visitOthers(node, ctx);
+        node.params.forEach(param -> param.accept(this, ctx));
+        if (node.hasReturnTypeSpecified()) {
+            node.returnType.get().accept(this, ctx);
+        }
     }
 
     default void visitMatch(Match node, C ctx) {
-        visitOthers(node, ctx);
+        node.expr.accept(this, ctx);
+        node.matchCases.forEach(matchCase -> matchCase.accept(this, ctx));
     }
 
     default void visitMatchCase(MatchCase node, C ctx) {
-        visitOthers(node, ctx);
+        node.pattern.accept(this, ctx);
+        node.body.accept(this, ctx);
     }
 
     default void visitConstructorPattern(ConstructorPattern node, C ctx) {
-        visitOthers(node, ctx);
+        node.fields.forEach(field -> field.accept(this, ctx));
     }
 
     default void visitRecordPattern(RecordPattern node, C ctx) {
-        visitOthers(node, ctx);
+        node.fields.forEach(field -> field.accept(this, ctx));
     }
 
     default void visitValuePattern(ValuePattern node, C ctx) {
-        visitOthers(node, ctx);
+        node.value.accept(this, ctx);
     }
 
     default void visitVariablePattern(VariablePattern node, C ctx) {
-        visitOthers(node, ctx);
+        node.name.accept(this, ctx);
     }
 
     default void visitWildCard(WildCard node, C ctx) {
-        visitOthers(node, ctx);
-    }
-
-    default void visitOthers(Node node, C ctx) {
-        var iter = node.iterator();
-        while (iter.hasNext()) {
-            var child = iter.next();
-            if (child instanceof Node) {
-                ((Node) child).accept(this, ctx);
-            }
-            if (child instanceof Optional) {
-                if (((Optional<Node>) child).isPresent()) {
-                    ((Optional<Node>) child).get().accept(this, ctx);
-                }
-            } else if (child instanceof List) {
-                for (Object n : ((List) child)) {
-                    ((Node) n).accept(this, ctx);
-                }
-            }
-        }
+        // Do nothing
     }
 }
