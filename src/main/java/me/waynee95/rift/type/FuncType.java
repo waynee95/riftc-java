@@ -23,6 +23,15 @@ public class FuncType extends Type {
         return paramTypes.size();
     }
 
+    public boolean hasReturnType() {
+        return returnType.isPresent();
+    }
+
+    @Override
+    public boolean isFuncType() {
+        return true;
+    }
+
     @Override
     public boolean eq(Type that) {
         throw new NotImplementedException();

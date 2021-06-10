@@ -13,6 +13,11 @@ public class DefaultType extends Type {
     }
 
     @Override
+    public boolean isDefaultType() {
+        return true;
+    }
+
+    @Override
     public boolean eq(Type that) {
         return this == that;
     }

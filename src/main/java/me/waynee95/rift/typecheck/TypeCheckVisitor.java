@@ -126,17 +126,24 @@ public class TypeCheckVisitor implements Visitor<Scope> {
                     () -> new RiftException("Cannot deterime type", param));
         }
 
+        node.body.accept(this, ctx);
+
         if (node.hasReturnTypeSpecified()) {
             node.returnType.get().accept(this, ctx);
+
+            // TODO: Compare specified return type with type of body
+
             node.returnType.get().type.ifPresentOrElse(
                     returnType -> node.setType(new FuncType(paramTypes, returnType)),
                     () -> new RiftException("Cannot deterime type", node.returnType.get()));
+
+
         } else {
             node.setType(new FuncType(paramTypes));
         }
-
-        node.body.accept(this, ctx);
     }
+
+    // TODO: extern decl
 
     @Override
     public void visitFuncCall(FuncCall node, Scope ctx) {
@@ -154,11 +161,17 @@ public class TypeCheckVisitor implements Visitor<Scope> {
             var argType =
                     arg.type.orElseThrow(() -> new RiftException("Cannot determine type", arg));
 
-            if (!argType.eq(funcType.paramTypes.get(i))) {
+            if (argType.isFuncType()) {
+                if (!((FuncType) argType).hasReturnType()) {
+                    throw new RiftException("Function does not return value", arg);
+                } else if (!((FuncType) argType).returnType.get().eq(funcType.paramTypes.get(i))) {
+                    throw new RiftException("Return value does not match expected type", arg);
+                }
+            } else if (!argType.eq(funcType.paramTypes.get(i))) {
                 throw new RiftException("Type mismatch", arg);
             }
         }
-
+        node.setType(funcType);
     }
 
     private boolean isCompatible(Operator.Op op, Type type) {
